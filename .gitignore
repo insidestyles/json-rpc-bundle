@@ -1,0 +1,7 @@
+# Composer
+composer.lock
+/vendor/
+#Editor
+.idea/
+#Unit Test
+phpunit.xml

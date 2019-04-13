@@ -1,0 +1,40 @@
+{
+    "name": "insidestyles/json-rpc-bundle",
+    "description": "Json Rpc Bundle For MSA",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fuong",
+            "email": "insidestyles@gmail.com"
+        }
+    ],
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.2",
+        "symfony/framework-bundle": "^4.1",
+        "symfony/messenger": "^4.2",
+        "symfony/validator": "^4.2",
+        "zendframework/zend-json-server": "^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Insidestyles\\JsonRpcBundle\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "": "Tests/DependencyInjection"
+        }
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": "true"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+parameters:
+    api.controller.class: Insidestyles\JsonRpcBundle\Controller\ApiController
+    api.servers_locator.class: Insidestyles\JsonRpcBundle\Server\ServersLocator
+    api.routing.loader.class: Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader
+
+services:
+
+    api.server.locator:
+        class: '%api.servers_locator.class%'
+
+    api.controller:
+        class: '%api.controller.class%'
+        arguments:
+            - '@api.server.locator'
+
+    api.routing.loader:
+        class: '%api.routing.loader.class%'
+        tags:
+            - { name: 'routing.loader' }
+

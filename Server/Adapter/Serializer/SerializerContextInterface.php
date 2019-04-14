@@ -7,4 +7,7 @@ namespace Insidestyles\JsonRpcBundle\Server\Adapter\Serializer;
  */
 interface SerializerContextInterface
 {
+    public function setGroups(array $groups);
+
+    public function getGroups(): array;
 }

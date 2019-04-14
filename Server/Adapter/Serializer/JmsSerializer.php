@@ -6,6 +6,8 @@
 
 namespace Insidestyles\JsonRpcBundle\Server\Adapter\Serializer;
 
+use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
+use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\SerializerInterface as JmsSerializerInterface;
 
 /**
@@ -14,14 +16,19 @@ use JMS\Serializer\SerializerInterface as JmsSerializerInterface;
 class JmsSerializer implements SerializerInterface
 {
     private $serializer;
+    private $contextFactory;
 
-    public function __construct(JmsSerializerInterface $serializer)
+    public function __construct(JmsSerializerInterface $serializer, ?SerializationContextFactoryInterface $contextFactory = null)
     {
         $this->serializer = $serializer;
+        $this->contextFactory = $contextFactory ?? new DefaultSerializationContextFactory();
     }
 
     public function serialize($data, ?SerializerContextInterface $context = null): string
     {
-        return $this->serializer->serialize($data, 'json');
+        $jmsContext = $this->contextFactory->createSerializationContext();
+        $jmsContext->setGroups($context ? $context->getGroups() : []);
+
+        return $this->serializer->serialize($data, 'json', $jmsContext);
     }
 }

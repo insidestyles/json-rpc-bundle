@@ -73,6 +73,10 @@ class JsonRpcExtension extends Extension
             $handlerDefinition->replaceArgument(2, $serializer);
         }
 
+        $handlerDefinition->addTag('json_rpc_api_handler', [
+            'key' => $handlerKey,
+        ]);
+
         $container->setDefinition($handlerId, $handlerDefinition);
 
         return $handlerId;

@@ -22,6 +22,6 @@ class SymfonySerializer implements SerializerInterface
 
     public function serialize($data, ?SerializerContextInterface $context = null): string
     {
-        return $this->serializer->serialize($data, 'json');
+        return $this->serializer->serialize($data, 'json', $context ? $context->getGroups() : []);
     }
 }

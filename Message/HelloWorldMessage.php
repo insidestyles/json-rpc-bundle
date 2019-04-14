@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class HelloWordMessage
+class HelloWorldMessage
 {
     /**
      * @Assert\NotBlank()

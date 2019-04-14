@@ -1,0 +1,15 @@
+parameters:
+
+services:
+
+    hello_world_api:
+        class: Insidestyles\JsonRpcBundle\Api\HelloWordApi
+        arguments:
+            - "@messenger.bus.default"
+        tags:
+            - {name: json_rpc_api, handler: main}
+
+    hello_world_api_handler:
+        class: Insidestyles\JsonRpcBundle\Handler\HelloWorldHandler
+        tags:
+            - {name: messenger.message_handler}

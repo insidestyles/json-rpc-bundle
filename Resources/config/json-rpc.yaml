@@ -4,6 +4,8 @@ parameters:
     json_rpc_api.routing.loader.class: Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader
     json_rpc_api.server.json_rpc.class: Zend\Json\Server\Server
     json_rpc_api.handler.zend_json_rpc.class: Insidestyles\JsonRpcBundle\Server\Handler\ZendJsonRpcHandler
+    json_rpc_api.serializer.default.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer
+    json_rpc_api.serializer.default_context.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext
 
 services:
 
@@ -21,6 +23,12 @@ services:
         tags:
             - { name: 'routing.loader' }
 
+    json_rpc_api.serializer.default_context:
+        class: '%json_rpc_api.serializer.default_context.class%'
+
+    json_rpc_api.serializer.default:
+        class: '%json_rpc_api.serializer.default.class%'
+
     json_rpc_api.server.json_rpc_abstract:
         abstract: true
         class: '%json_rpc_api.server.json_rpc.class%'
@@ -30,4 +38,7 @@ services:
         class: '%json_rpc_api.handler.zend_json_rpc.class%'
         arguments:
             - '@json_rpc_api.server.json_rpc_abstract'
+            - ''
+            - '@json_rpc_api.serializer.default'
+            - '@json_rpc_api.serializer.default_context'
 

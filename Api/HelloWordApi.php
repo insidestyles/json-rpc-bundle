@@ -2,7 +2,7 @@
 
 namespace Insidestyles\JsonRpcBundle\Api;
 
-use Insidestyles\JsonRpcBundle\Message\HelloWordMessage;
+use Insidestyles\JsonRpcBundle\Message\HelloWorldMessage;
 use Insidestyles\JsonRpcBundle\Sdk\Contract\HelloWordJsonRpcApiInterface;
 
 /**
@@ -12,7 +12,7 @@ final class HelloWordApi extends AbstractApi implements HelloWordJsonRpcApiInter
 {
     public function helloWorld(string $name)
     {
-        $message = new HelloWordMessage($name);
+        $message = new HelloWorldMessage($name);
 
         return $this->handle($message);
     }

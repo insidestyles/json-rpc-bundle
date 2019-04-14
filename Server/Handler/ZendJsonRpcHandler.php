@@ -4,6 +4,9 @@ namespace Insidestyles\JsonRpcBundle\Server\Handler;
 
 use Insidestyles\JsonRpcBundle\Exception\InternalException;
 use Insidestyles\JsonRpcBundle\Exception\ValidationException;
+use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer;
+use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext;
+use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerContextInterface;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -19,16 +22,16 @@ use Zend\Json\Server\Request as JsonRpcRequest;
 class ZendJsonRpcHandler implements JsonRpcHandlerInterface
 {
     private $server;
-
     private $logger;
-
     private $serializer;
+    private $serializerContext;
 
-    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null)
+    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null, ?SerializerContextInterface $serializerContext = null)
     {
         $this->server = $server;
         $this->logger = $logger ?? new NullLogger();
-        $this->serializer = $serializer;
+        $this->serializer = $serializer ?? new DefaultSerializer();
+        $this->serializerContext = $serializerContext ?? new DefaultSerializerContext();
     }
 
     public function handle(Request $request): Response
@@ -73,8 +76,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 throw new InternalException();
             }
         }
-        $response = $this->serializer ? $this->serializer->serialize($response) : $response;
 
-        return new Response($response, 200, ['Content-Type' => 'application/json']);
+        return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);
     }
 }

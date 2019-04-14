@@ -3,6 +3,7 @@
 namespace Insidestyles\JsonRpcBundle\Server\Handler;
 
 use Insidestyles\JsonRpcBundle\Exception\InternalException;
+use Insidestyles\JsonRpcBundle\Exception\ValidationException;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -56,11 +57,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 $errors = $jsonServerResponse->getError()->toArray();
                 $errorObject = $errors['data'];
                 if ($errorObject instanceof ValidationFailedException) {
-                    $response['error'] = [
-                        'code' => -32098,
-                        'message' => 'Validation Error',
-                        'data' => $errorObject->getViolations(),
-                    ];
+                    throw new ValidationException();
                 } else {
                     $errors['data'] = [];
                 }
@@ -70,12 +67,11 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
             }
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
-            $response['id'] = null;
-            $response['error'] = [
-                'code' => -32099,
-                'message' => $e->getMessage(),
-                'data' => new InternalException('Internal Server Error'),
-            ];
+            if ($e instanceof ValidationException) {
+                throw $e;
+            } else {
+                throw new InternalException();
+            }
         }
         $response = $this->serializer ? $this->serializer->serialize($response) : $response;
 

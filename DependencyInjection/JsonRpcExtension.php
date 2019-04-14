@@ -40,10 +40,10 @@ class JsonRpcExtension extends Extension
     /**
      * Register handler instance
      */
-    private function registerHandler(string $handlerKey,array $handlerInfo, ContainerBuilder $container)
+    private function registerHandler(string $handlerKey, array $handlerInfo, ContainerBuilder $container)
     {
-        $rootHandlerPath = self::ALIAS . '.handler';
-        $rootServerPath = self::ALIAS . '.server';
+        $rootHandlerPath = self::ALIAS . '.handler.';
+        $rootServerPath = self::ALIAS . '.server.';
         $handlerId = $rootHandlerPath . $handlerKey;
         $serverId = $rootServerPath . $handlerKey;
 
@@ -60,14 +60,15 @@ class JsonRpcExtension extends Extension
 
         $serverDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
         $container->setDefinition($serverId, $serverDefinition);
+
         $handlerDefinition->replaceArgument(0, $serverDefinition);
 
-        if (!empty($handlerInfo['logger'])){
+        if (!empty($handlerInfo['logger'])) {
             $logger = $container->getDefinition($handlerInfo['logger']);
             $handlerDefinition->replaceArgument(1, $logger);
         }
 
-        if (!empty($handlerInfo['serializer'])){
+        if (!empty($handlerInfo['serializer'])) {
             $serializer = $container->getDefinition($handlerInfo['serializer']);
             $handlerDefinition->replaceArgument(2, $serializer);
         }

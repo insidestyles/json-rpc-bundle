@@ -2,7 +2,8 @@
 
 namespace Insidestyles\JsonRpcBundle\DependencyInjection\Compiler;
 
-use Insidestyles\JsonRpcBundle\Exception\InternalException;
+use Insidestyles\JsonRpcBundle\DependencyInjection\JsonRpcExtension;
+use Insidestyles\JsonRpcBundle\Sdk\Contract\JsonRpcApiInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -11,32 +12,40 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class JsonRpcServerCompilerPass implements CompilerPassInterface
 {
-    public function process(
-        ContainerBuilder $container
-    ) {
+    private $apiTag;
+
+    public function __construct()
+    {
+        $this->apiTag = JsonRpcExtension::ALIAS;
+    }
+
+    public function process(ContainerBuilder $container)
+    {
         if (!$container->has('json_rpc_api')) {
             return;
         }
 
-        $definition = $container->findDefinition(
-            'json_rpc_api'
-        );
+        $rootServerPath = JsonRpcExtension::ALIAS . '.server.';
 
-        $taggedServices = $container->findTaggedServiceIds(
-            'json_rpc_api'
-        );
+        $taggedServices = $container->findTaggedServiceIds($this->apiTag);
 
         foreach ($taggedServices as $id => $tags) {
+            $handler = '';
+            foreach ($tags as $attributes) {
+                if (empty($attributes['handler'])) {
+                    throw new \RuntimeException('Missing required attribute "handler".');
+                }
+                $handler = $attributes['handler'];
+            }
             $implementedInterfaces = class_implements($container->findDefinition($id)->getClass());
 
-            if (empty($implementedInterfaces)) {
-                throw new InternalException(sprintf('The JSON-RPC Api class %s MUST implement at least one interface to be accessible with api-sdk!', $container->findDefinition($id)->getClass()));
+            $serverDefinition = $container->findDefinition($rootServerPath . $handler);
+
+            foreach ($implementedInterfaces as $implementedInterface) {
+                if ($implementedInterface instanceof JsonRpcApiInterface) {
+                    $serverDefinition->addMethodCall('setClass', [$container->findDefinition($id), $implementedInterface]);
+                }
             }
-
-            //now, we are assuming that the first of the implemented interfaces is the one, we need.
-            $jsonRpcNamespace = array_shift($implementedInterfaces);
-
-            $definition->addMethodCall('setClass', [$container->findDefinition($id), $jsonRpcNamespace]);
         }
     }
 }

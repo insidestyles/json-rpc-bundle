@@ -10,7 +10,7 @@ namespace Insidestyles\JsonRpcBundle\Sdk\Contract;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-interface HelloWordApiInterface
+interface HelloWordJsonRpcApiInterface extends JsonRpcApiInterface
 {
     public function helloWorld(string $name);
 }

@@ -10,8 +10,8 @@ namespace Insidestyles\JsonRpcBundle\Exception;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class InternalException extends \Exception
+class ValidationException extends \Exception
 {
-    protected $message = 'Internal Server Error';
-    protected $code = -32099;
+    protected $message = 'Validation Error';
+    protected $code = -32097;
 }

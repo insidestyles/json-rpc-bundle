@@ -12,5 +12,6 @@ namespace Insidestyles\JsonRpcBundle\Exception;
  */
 class HandlerNotFoundException extends \Exception
 {
-
+    protected $message = 'Handler Not Found';
+    protected $code = -32098;
 }

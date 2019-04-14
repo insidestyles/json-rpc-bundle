@@ -17,7 +17,7 @@ composer require insidestyles/json-rpc-bundle
 ```
 Update config.yml
 ```yaml
-json_rpc_server:
+json_rpc_api:
 ```
 Update AppKernel
 ```php

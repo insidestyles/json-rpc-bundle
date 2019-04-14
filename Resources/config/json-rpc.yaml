@@ -1,20 +1,32 @@
 parameters:
-    api.controller.class: Insidestyles\JsonRpcBundle\Controller\ApiController
-    api.servers_locator.class: Insidestyles\JsonRpcBundle\Server\ServersLocator
-    api.routing.loader.class: Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader
+    json_rpc_api.controller.class: Insidestyles\JsonRpcBundle\Controller\ApiController
+    json_rpc_api.handlers_locator.class: Insidestyles\JsonRpcBundle\Server\HandlersLocator
+    json_rpc_api.routing.loader.class: Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader
+    json_rpc_api.server.json_rpc.class: Zend\Json\Server\Server
+    json_rpc_api.handler.zend_json_rpc.class: Insidestyles\JsonRpcBundle\Server\Handler\ZendJsonRpcHandler
 
 services:
 
-    api.server.locator:
-        class: '%api.servers_locator.class%'
+    json_rpc_api.handler.locator:
+        class: '%json_rpc_api.handlers_locator.class%'
 
-    api.controller:
-        class: '%api.controller.class%'
+    json_rpc_api.controller:
+        class: '%json_rpc_api.controller.class%'
         arguments:
-            - '@api.server.locator'
+            - '@json_rpc_api.handler.locator'
 
-    api.routing.loader:
-        class: '%api.routing.loader.class%'
+    json_rpc_api.routing.loader:
+        class: '%json_rpc_api.routing.loader.class%'
         tags:
             - { name: 'routing.loader' }
+
+    json_rpc_api.server.json_rpc_abstract:
+        abstract: true
+        class: '%json_rpc_api.server.json_rpc.class%'
+
+    json_rpc_api.handler.zend_json_rpc_abstract:
+        abstract: true
+        class: '%json_rpc_api.handler.zend_json_rpc.class%'
+        arguments:
+            - '@json_rpc_api.server.json_rpc_abstract'
 

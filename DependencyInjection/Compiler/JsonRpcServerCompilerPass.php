@@ -14,12 +14,12 @@ class JsonRpcServerCompilerPass implements CompilerPassInterface
     public function process(
         ContainerBuilder $container
     ) {
-        if (!$container->has('json_rpc_server')) {
+        if (!$container->has('json_rpc_api')) {
             return;
         }
 
         $definition = $container->findDefinition(
-            'json_rpc_server'
+            'json_rpc_api'
         );
 
         $taggedServices = $container->findTaggedServiceIds(

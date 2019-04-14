@@ -3,15 +3,13 @@
 namespace Insidestyles\JsonRpcBundle\Api;
 
 use Insidestyles\JsonRpcBundle\Message\HelloWordMessage;
+use Insidestyles\JsonRpcBundle\Sdk\Contract\HelloWordApiInterface;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-final class HelloWordApi extends AbstractApi
+final class HelloWordApi extends AbstractApi implements HelloWordApiInterface
 {
-    /**
-     * @inheritdoc
-     */
     public function helloWorld(string $name)
     {
         $message = new HelloWordMessage($name);

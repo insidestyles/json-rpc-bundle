@@ -3,6 +3,7 @@
 namespace Insidestyles\JsonRpcBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class JsonRpcExtension extends Extension
 {
-    const ALIAS = 'json_rpc_server';
+    const ALIAS = 'json_rpc_api';
 
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -28,10 +29,10 @@ class JsonRpcExtension extends Extension
             $this->registerHandler($handlerKey, $handlerInfo, $container);
 
             // Add info to routing loader
-            $container->getDefinition('api.routing_loader')->addMethodCall('addPath', [
+            $container->getDefinition('json_rpc_api.routing.loader')->addMethodCall('addPath', [
                 $handlerKey,
                 $handlerInfo['host'],
-                $handlerInfo['path']
+                $handlerInfo['path'],
             ]);
         }
     }
@@ -39,9 +40,39 @@ class JsonRpcExtension extends Extension
     /**
      * Register handler instance
      */
-    private function registerHandler($handlerKey, array $handlerInfo, ContainerBuilder $container)
+    private function registerHandler(string $handlerKey,array $handlerInfo, ContainerBuilder $container)
     {
-        $handlerId = self::ALIAS . '.handler.' . $handlerKey;
+        $rootHandlerPath = self::ALIAS . '.handler';
+        $rootServerPath = self::ALIAS . '.server';
+        $handlerId = $rootHandlerPath . $handlerKey;
+        $serverId = $rootServerPath . $handlerKey;
+
+        $definitions = [
+            'server' => [
+                'zend-json-rpc' => $rootServerPath . 'json_rpc_abstract',
+            ],
+            'handler' => [
+                'zend-json-rpc' => $rootHandlerPath . 'zend_json_rpc_abstract',
+            ],
+        ];
+
+        $handlerDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
+
+        $serverDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
+        $container->setDefinition($serverId, $serverDefinition);
+        $handlerDefinition->replaceArgument(0, $serverDefinition);
+
+        if (!empty($handlerInfo['logger'])){
+            $logger = $container->getDefinition($handlerInfo['logger']);
+            $handlerDefinition->replaceArgument(1, $logger);
+        }
+
+        if (!empty($handlerInfo['serializer'])){
+            $serializer = $container->getDefinition($handlerInfo['serializer']);
+            $handlerDefinition->replaceArgument(2, $serializer);
+        }
+
+        $container->setDefinition($handlerId, $handlerDefinition);
 
         return $handlerId;
     }

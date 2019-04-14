@@ -2,6 +2,7 @@
 
 namespace Insidestyles\JsonRpcBundle\Routing;
 
+use Insidestyles\JsonRpcBundle\DependencyInjection\JsonRpcExtension;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -41,6 +42,7 @@ class ApiRoutingLoader extends Loader
     public function load($resource, $type = null)
     {
         $routes = new RouteCollection();
+        $rPath = JsonRpcExtension::ALIAS . 'api_handle';
 
         foreach ($this->paths as $key => $pathInfo) {
             $defaults = [
@@ -57,7 +59,7 @@ class ApiRoutingLoader extends Loader
                 $pathInfo['schemes']
             );
 
-            $routes->add('api_handle_' . $key, $route);
+            $routes->add($rPath . $key, $route);
         }
 
         return $routes;

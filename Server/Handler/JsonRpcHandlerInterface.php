@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-interface JsonRpcServerInterface
+interface JsonRpcHandlerInterface
 {
     /**
      * @param Request $request

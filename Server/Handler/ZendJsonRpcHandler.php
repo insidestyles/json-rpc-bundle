@@ -2,60 +2,38 @@
 
 namespace Insidestyles\JsonRpcBundle\Server\Handler;
 
+use Insidestyles\JsonRpcBundle\Exception\InternalException;
+use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
 use Zend\Json\Server\Server;
-use Zend\Json\Server\Smd;
 use Zend\Json\Server\Request as JsonRpcRequest;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class JsonRpcServer implements JsonRpcServerInterface
+class ZendJsonRpcHandler implements JsonRpcHandlerInterface
 {
-    /**
-     * @var Server
-     */
     private $server;
 
-    /**
-     * @var SerializerInterface
-     */
+    private $logger;
+
     private $serializer;
 
-    /**
-     * @var SerializationContextFactoryInterface
-     */
-    private $contextFactory;
-
-    /**
-     * JsonRpcServer constructor.
-     * @param Server $server
-     * @param SerializerInterface $serializer
-     * @param SerializationContextFactoryInterface $contextFactory
-     */
-    public function __construct(
-        Server $server,
-        SerializerInterface $serializer,
-        SerializationContextFactoryInterface $contextFactory
-    ) {
+    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null)
+    {
         $this->server = $server;
+        $this->logger = $logger ?? new NullLogger();
         $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    public function handle(Request $request)
+    public function handle(Request $request): Response
     {
         $this->server->setReturnResponse(true);
         if ('GET' == $request->getMethod()) {
-            // Indicate the URL endpoint, and the JSON-RPC version used:
-            $this->server->setTarget('/api')
-                ->setEnvelope(Smd::ENV_JSONRPC_2);
 
             return (new Response($this->server->getServiceMap(), 200, ['Content-Type' => 'application/json']));
         }
@@ -69,37 +47,38 @@ class JsonRpcServer implements JsonRpcServerInterface
 
         try {
             $jsonServerResponse = $this->server->handle($rpcRequest);
-            $response = ['id' => $jsonServerResponse->getId()];
+            $response = [
+                'jsonrpc' => $jsonServerResponse->getVersion(),
+                'id' => $jsonServerResponse->getId(),
+            ];
 
             if ($jsonServerResponse->isError()) {
                 $errors = $jsonServerResponse->getError()->toArray();
                 $errorObject = $errors['data'];
                 if ($errorObject instanceof ValidationFailedException) {
-                    $errors['message'] = 'Validation Error';
-                    $errors['data'] = $errorObject->getViolations();
+                    $response['error'] = [
+                        'code' => -32098,
+                        'message' => 'Validation Error',
+                        'data' => $errorObject->getViolations(),
+                    ];
                 } else {
-                    $errors['data'] = [];//hide
+                    $errors['data'] = [];
                 }
                 $response['error'] = $errors;
             } else {
                 $response['result'] = $jsonServerResponse->getResult();
             }
-
-            if (null !== ($version = $jsonServerResponse->getVersion())) {
-                $response['jsonrpc'] = $version;
-            }
         } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
             $response['id'] = null;
             $response['error'] = [
                 'code' => -32099,
                 'message' => $e->getMessage(),
-                'data' => new InternalException($e->getMessage())
+                'data' => new InternalException('Internal Server Error'),
             ];
         }
+        $response = $this->serializer ? $this->serializer->serialize($response) : $response;
 
-        $context = $this->contextFactory->createSerializationContext();
-
-        return new Response($this->serializer->serialize($response, 'json', $context), 200,
-            ['Content-Type' => 'application/json']);
+        return new Response($response, 200, ['Content-Type' => 'application/json']);
     }
 }

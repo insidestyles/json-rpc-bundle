@@ -10,7 +10,7 @@ namespace Insidestyles\JsonRpcBundle\Exception;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class ServerNotFoundException extends \Exception
+class HandlerNotFoundException extends \Exception
 {
 
 }

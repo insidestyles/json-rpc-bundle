@@ -12,7 +12,7 @@ class AddProcessorsPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('json_rpc.handler')) {
+        if (!$container->hasDefinition('json_rpc_api.handlers')) {
             return;
         }
     }

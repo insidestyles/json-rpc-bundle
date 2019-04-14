@@ -2,7 +2,7 @@
 
 namespace Insidestyles\JsonRpcBundle\Controller;
 
-use Insidestyles\JsonRpcBundle\Server\ServersLocatorInterface;
+use Insidestyles\JsonRpcBundle\Server\HandlersLocatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ final class ApiController extends AbstractController
 {
     private $serversLocator;
 
-    public function __construct(ServersLocatorInterface $serversLocator)
+    public function __construct(HandlersLocatorInterface $serversLocator)
     {
         $this->serversLocator = $serversLocator;
     }

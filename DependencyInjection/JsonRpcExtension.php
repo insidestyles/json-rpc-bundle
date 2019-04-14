@@ -6,6 +6,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -64,12 +65,12 @@ class JsonRpcExtension extends Extension
         $handlerDefinition->replaceArgument(0, $serverDefinition);
 
         if (!empty($handlerInfo['logger'])) {
-            $logger = $container->getDefinition($handlerInfo['logger']);
+            $logger = new Reference($handlerInfo['logger']);
             $handlerDefinition->replaceArgument(1, $logger);
         }
 
         if (!empty($handlerInfo['serializer'])) {
-            $serializer = $container->getDefinition($handlerInfo['serializer']);
+            $serializer = new Reference($handlerInfo['serializer']);
             $handlerDefinition->replaceArgument(2, $serializer);
         }
 

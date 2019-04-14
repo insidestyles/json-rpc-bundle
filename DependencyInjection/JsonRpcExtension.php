@@ -58,7 +58,7 @@ class JsonRpcExtension extends Extension
 
         $handlerDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
 
-        $serverDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
+        $serverDefinition = new ChildDefinition($definitions['server']['zend-json-rpc']);
         $container->setDefinition($serverId, $serverDefinition);
 
         $handlerDefinition->replaceArgument(0, $serverDefinition);

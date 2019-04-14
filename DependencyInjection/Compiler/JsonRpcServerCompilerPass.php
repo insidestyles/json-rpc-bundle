@@ -3,7 +3,6 @@
 namespace Insidestyles\JsonRpcBundle\DependencyInjection\Compiler;
 
 use Insidestyles\JsonRpcBundle\DependencyInjection\JsonRpcExtension;
-use Insidestyles\JsonRpcBundle\Sdk\Contract\JsonRpcApiInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -12,40 +11,28 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class JsonRpcServerCompilerPass implements CompilerPassInterface
 {
-    private $apiTag;
+    private $config;
+    private $handlerTag;
 
     public function __construct()
     {
-        $this->apiTag = JsonRpcExtension::ALIAS;
+        $this->config = JsonRpcExtension::ALIAS;
+        $this->handlerTag = JsonRpcExtension::ALIAS . '_handler';
     }
 
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('json_rpc_api')) {
-            return;
-        }
+        $handlerRegistryDefinition = $container->getDefinition($this->config . '.handler.locator');
+        $services = $container->findTaggedServiceIds($this->handlerTag);
 
-        $rootServerPath = JsonRpcExtension::ALIAS . '.server.';
-
-        $taggedServices = $container->findTaggedServiceIds($this->apiTag);
-
-        foreach ($taggedServices as $id => $tags) {
-            $handler = '';
+        foreach ($services as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (empty($attributes['handler'])) {
-                    throw new \RuntimeException('Missing required attribute "handler".');
-                }
-                $handler = $attributes['handler'];
+                $key = $attributes['key'];
             }
-            $implementedInterfaces = class_implements($container->findDefinition($id)->getClass());
-
-            $serverDefinition = $container->findDefinition($rootServerPath . $handler);
-
-            foreach ($implementedInterfaces as $implementedInterface) {
-                if ($implementedInterface instanceof JsonRpcApiInterface) {
-                    $serverDefinition->addMethodCall('setClass', [$container->findDefinition($id), $implementedInterface]);
-                }
-            }
+            $handlerRegistryDefinition->addMethodCall('addHandler', [
+                $container->getDefinition($id),
+                $key,
+            ]);
         }
     }
 }

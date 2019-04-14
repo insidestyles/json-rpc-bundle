@@ -21,18 +21,13 @@ class ApiRoutingLoader extends Loader
 
     /**
      * Add path
-     *
-     * @param string $key
-     * @param string $host
-     * @param string $path
-     * @param array  $schemes
      */
     public function addPath($key, $host, $path, array $schemes = [])
     {
         $this->paths[$key] = [
             'host' => $host,
             'path' => $path,
-            'schemes' => $schemes
+            'schemes' => $schemes,
         ];
     }
 
@@ -46,8 +41,8 @@ class ApiRoutingLoader extends Loader
 
         foreach ($this->paths as $key => $pathInfo) {
             $defaults = [
-                '_controller' => 'api.controller:handle',
-                'serverKey' => $key
+                '_controller' => JsonRpcExtension::ALIAS . '.controller:handle',
+                'serverKey' => $key,
             ];
 
             $route = new Route(
@@ -70,6 +65,6 @@ class ApiRoutingLoader extends Loader
      */
     public function supports($resource, $type = null)
     {
-        return 'api' == $type;
+        return JsonRpcExtension::ALIAS == $type;
     }
 }

@@ -12,6 +12,7 @@ services:
 
     json_rpc_api.controller:
         class: '%json_rpc_api.controller.class%'
+        public: true
         arguments:
             - '@json_rpc_api.handler.locator'
 

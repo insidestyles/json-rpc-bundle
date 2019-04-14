@@ -55,7 +55,7 @@ Add Example HelloWorldApi
 services:
 
     hello_world_api:
-        class: Insidestyles\JsonRpcBundle\Api\HelloWordApi
+        class: Insidestyles\JsonRpcBundle\Api\HelloWorldApi
         arguments:
             - "@messenger.bus.default"
         tags:
@@ -82,7 +82,7 @@ json_rpc_api:
             path: /extra_api
             host: ~
             serializer: json_rpc_api.serialzier.jms
-            logger: logger
+            logger: monolog.logger
 ```
 
 Add custom serializer adapter

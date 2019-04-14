@@ -38,7 +38,7 @@ services:
         class: '%json_rpc_api.handler.zend_json_rpc.class%'
         arguments:
             - '@json_rpc_api.server.json_rpc_abstract'
-            - ''
+            - ~
             - '@json_rpc_api.serializer.default'
             - '@json_rpc_api.serializer.default_context'
 

@@ -8,7 +8,7 @@ use Insidestyles\JsonRpcBundle\Sdk\Contract\HelloWordJsonRpcApiInterface;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-final class HelloWordApi extends AbstractApi implements HelloWordJsonRpcApiInterface
+final class HelloWorldApi extends AbstractApi implements HelloWordJsonRpcApiInterface
 {
     public function helloWorld(string $name)
     {

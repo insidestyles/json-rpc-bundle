@@ -60,7 +60,11 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 $errors = $jsonServerResponse->getError()->toArray();
                 $errorObject = $errors['data'];
                 if ($errorObject instanceof ValidationFailedException) {
-                    throw new ValidationException();
+                    $response['error'] = [
+                        'code' => -32098,
+                        'message' => 'Validation Error',
+                        'data' => $errorObject->getViolations(),
+                    ];
                 } else {
                     $errors['data'] = [];
                 }
@@ -70,11 +74,12 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
             }
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
-            if ($e instanceof ValidationException) {
-                throw $e;
-            } else {
-                throw new InternalException();
-            }
+            $response['id'] = null;
+            $response['error'] = [
+                'code' => -32099,
+                'message' => $e->getMessage(),
+                'data' => new InternalException($e->getMessage()),
+            ];
         }
 
         return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);

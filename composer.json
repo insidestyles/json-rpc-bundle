@@ -19,12 +19,12 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
-        "jms/serializer": "^2.2",
+        "jms/serializer-bundle ": "^3.2",
         "symfony/validator": "^4.2",
         "symfony/serializer": "^4.2"
     },
     "suggest": {
-        "jms/serializer": "Allows JMS Serializer",
+        "jms/serializer-bundle ": "Allows JMS Serializer",
         "symfony/serializer": "Allows Symfony Serializer",
         "symfony/validator": "Use Symfony Validator for message bus validation"
     },

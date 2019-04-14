@@ -94,3 +94,62 @@ services:
         arguments:
             - "@jms_serializer"
 ```
+
+
+## Tips
+
+- Install Symfony Validator and validation middle ware from messenger bus for message validation
+
+```yaml
+framework:
+    messenger:
+        buses:
+            command_bus:
+                middleware:
+                    - messenger.middleware.validation
+```
+
+```php
+<?php
+
+namespace Insidestyles\JsonRpcBundle\Message;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @author Fuong <insidestyles@gmail.com>
+ */
+class HelloWorldMessage
+{
+    /**
+     * @Assert\NotBlank()
+     * @var string
+     */
+    private $message;
+
+    public function __construct(string $message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+}
+
+``` 
+
+- Go to api endpoint http:://localhost/api to see json-rpc methods 
+
+```json
+{
+	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
+	"params": {
+		"name": "test"
+	}
+}
+```

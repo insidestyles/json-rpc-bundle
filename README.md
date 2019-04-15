@@ -1,5 +1,11 @@
 # json-rpc-bundle
 Symfony Json Rpc Bundle
+Fast way to create json rpc microservice, using symfony messenger
+and zend json server
+
+- Json Rpc 2.0
+- Batch Support
+- Already maintained lib (symfony, Zend)
 
 ## Requirements
 
@@ -143,13 +149,43 @@ class HelloWorldMessage
 
 ``` 
 
+- You don't have to extend class AbstractApi if you don't want to use Symfony Messenger. 
+Just implement your own interface that extends JsonRpcApiInterface. See example HelloWorldApi
+
 - Go to api endpoint http:://localhost/api to see json-rpc methods 
+
+- simple request content
 
 ```json
 {
+    "id": 1,
 	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
 	"params": {
 		"name": "test"
 	}
 }
 ```
+- batch request content
+
+```json
+[
+    {
+        "id": 1,
+        "method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
+        "params": {
+            "name": "test"
+        }
+    },
+    {
+        "id": 1,
+    	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
+    	"params": {
+    		"name": "test"
+    	}
+    }
+]
+```
+
+## Contribution
+
+All are welcome

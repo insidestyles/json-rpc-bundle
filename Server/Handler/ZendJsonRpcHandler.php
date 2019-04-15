@@ -41,9 +41,23 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
 
             return (new Response($this->server->getServiceMap(), 200, ['Content-Type' => 'application/json']));
         }
+        $content = json_decode($request->getContent(), true);
+        if (!empty($content[0])) {
+            $response = [];
+            foreach ($content as $childContent) {
+                $response[] = $this->handlRequest($childContent);
+            }
+        } else {
+            $response = $this->handlRequest($request->getContent());
+        }
 
+        return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);
+    }
+
+    private function handlRequest(string $jsonContent)
+    {
         $rpcRequest = new JsonRpcRequest();
-        $rpcRequest->loadJson($request->getContent());
+        $rpcRequest->loadJson($jsonContent);
 
         if ($rpcRequest->getId() === null) {
             $rpcRequest->setId(uniqid());
@@ -55,6 +69,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 'jsonrpc' => $jsonServerResponse->getVersion(),
                 'id' => $jsonServerResponse->getId(),
             ];
+
 
             if ($jsonServerResponse->isError()) {
                 $errors = $jsonServerResponse->getError()->toArray();
@@ -81,7 +96,5 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 'data' => new InternalException($e->getMessage()),
             ];
         }
-
-        return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);
     }
 }

@@ -177,7 +177,7 @@ Just implement your own interface that extends JsonRpcApiInterface. See example 
         }
     },
     {
-        "id": 1,
+        "id": 2,
     	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
     	"params": {
     		"name": "test"

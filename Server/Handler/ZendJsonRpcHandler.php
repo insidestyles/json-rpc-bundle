@@ -96,5 +96,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 'data' => new InternalException($e->getMessage()),
             ];
         }
+
+        return $response;
     }
 }

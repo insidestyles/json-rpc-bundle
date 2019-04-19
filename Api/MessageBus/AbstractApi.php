@@ -1,6 +1,6 @@
 <?php
 
-namespace Insidestyles\JsonRpcBundle\Api;
+namespace Insidestyles\JsonRpcBundle\Api\MessageBus;
 
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;

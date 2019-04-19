@@ -13,7 +13,6 @@ and zend json server
         "php": "^7.2",
         "ext-json": "*",
         "symfony/framework-bundle": "^4.1",
-        "symfony/messenger": "^4.2",
         "zendframework/zend-json-server": "^3.1"
 
 
@@ -25,7 +24,7 @@ This package is installable and autoloadable via Composer
 composer require insidestyles/json-rpc-bundle
 ```
 
-Update json rpc config.yaml
+Add package config: json_rpc_api.yaml
 
 ```yaml
 json_rpc_api:
@@ -42,7 +41,7 @@ Add Bundle to App
     Insidestyles\JsonRpcBundle\JsonRpcBundle::class => ['all' => true],
 ```
 
-Update routes.yaml
+Add route config: json_rpc_api_routing.yaml
 
 ```yaml
 _json_rpc_api:
@@ -51,7 +50,6 @@ _json_rpc_api:
 
 ```
 
-Config Symfony Messenger https://symfony.com/doc/current/messenger.html
 
 ## Usage
 
@@ -67,11 +65,33 @@ services:
         tags:
             - {name: json_rpc_api, handler: main}
 
+```              
+
+HelloWorld Api with Symfony Messenger:
+
+Add requirement:
+
+```sh
+composer require insidestyles/json-rpc-bundle
+```
+
+Config Symfony Messenger https://symfony.com/doc/current/messenger.html
+
+```yaml
+services:
+
+    hello_world_api:
+        class: Insidestyles\JsonRpcBundle\Api\MessageBus\HelloWorldApi
+        arguments:
+            - "@messenger.bus.default"
+        tags:
+            - {name: json_rpc_api, handler: main}
+            - 
     hello_world_api_handler:
         class: Insidestyles\JsonRpcBundle\Handler\HelloWorldHandler
         tags:
             - {name: messenger.message_handler}
-
+              
 ```
 
 Add extra api endpoint with jms serializer and default symfony logger

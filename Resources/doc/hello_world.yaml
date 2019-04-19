@@ -3,7 +3,7 @@ parameters:
 services:
 
     hello_world_api:
-        class: Insidestyles\JsonRpcBundle\Api\HelloWordApi
+        class: Insidestyles\JsonRpcBundle\Api\MessageBus\HelloWorldApi
         arguments:
             - "@messenger.bus.default"
         tags:

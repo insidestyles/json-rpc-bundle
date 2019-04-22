@@ -5,3 +5,10 @@ json_rpc_api:
             host: ~
             serializer: ~
             logger: ~
+            annotation: ~
+        extra:
+            path: /extra
+            host: ~
+            serializer: ~
+            logger: ~
+            annotation: ~

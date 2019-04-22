@@ -53,26 +53,63 @@ _json_rpc_api:
 
 ## Usage
 
-Add Example HelloWorldApi
+- Add Example HelloWorldApi
 
 ```yaml
 services:
 
     hello_world_api:
         class: Insidestyles\JsonRpcBundle\Api\HelloWorldApi
-        arguments:
-            - "@messenger.bus.default"
         tags:
             - {name: json_rpc_api, handler: main}
 
-```              
+```    
 
-HelloWorld Api with Symfony Messenger:
+- Add Annotation To HelloWorldApi
 
 Add requirement:
 
 ```sh
-composer require insidestyles/json-rpc-bundle
+composer require doctrine/annotations
+```
+
+Enable annotation config: annotation => true
+
+```yaml
+json_rpc_api:
+    handlers:
+        main:
+            path: /api
+            host: ~
+            serializer: ~
+            logger: ~
+            annotation: true
+```              
+
+Update api interface with JsonRpcApi Annotation
+
+@JsonRpcApi(namespace = "main")
+
+```php
+<?php
+    /**
+     * @JsonRpcApi(namespace = "main")
+     *
+     * @author Fuong <insidestyles@gmail.com>
+     */
+    interface HelloWordJsonRpcApiInterface extends JsonRpcApiInterface
+    {
+        public function helloWorld(string $name);
+    }
+    
+```
+
+- HelloWorld Api with Symfony Messenger:
+
+Add requirement:
+
+```sh
+composer require symfony/messenger
 ```
 
 Config Symfony Messenger https://symfony.com/doc/current/messenger.html
@@ -94,7 +131,7 @@ services:
               
 ```
 
-Add extra api endpoint with jms serializer and default symfony logger
+- Add extra api endpoint with jms serializer and default symfony logger
 
 ```yaml
 json_rpc_api:
@@ -111,7 +148,7 @@ json_rpc_api:
             logger: monolog.logger
 ```
 
-Add custom serializer adapter
+- Add custom serializer adapter
 
 ```yaml
 services:
@@ -185,6 +222,18 @@ Just implement your own interface that extends JsonRpcApiInterface. See example 
 	}
 }
 ```
+- simple request content with annotation
+
+```json
+{
+    "id": 1,
+	"method": "main.helloWorld",
+	"params": {
+		"name": "test"
+	}
+}
+```
+
 - batch request content
 
 ```json

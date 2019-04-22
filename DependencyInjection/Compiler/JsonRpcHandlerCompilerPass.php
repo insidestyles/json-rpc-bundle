@@ -3,7 +3,6 @@
 namespace Insidestyles\JsonRpcBundle\DependencyInjection\Compiler;
 
 use Insidestyles\JsonRpcBundle\DependencyInjection\JsonRpcExtension;
-use Insidestyles\JsonRpcBundle\Sdk\Contract\JsonRpcApiInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -12,36 +11,25 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class JsonRpcHandlerCompilerPass implements CompilerPassInterface
 {
-    private $apiTag;
+    private $config;
+    private $handlerTag;
 
     public function __construct()
     {
-        $this->apiTag = JsonRpcExtension::ALIAS;
+        $this->config = JsonRpcExtension::ALIAS;
+        $this->handlerTag = JsonRpcExtension::HANDLER_TAG;
     }
 
     public function process(ContainerBuilder $container)
     {
-        $rootServerPath = JsonRpcExtension::ALIAS . '.server.';
+        $handlerRegistryDefinition = $container->getDefinition($this->config . '.handler.locator');
+        $services = $container->findTaggedServiceIds($this->handlerTag);
 
-        $taggedServices = $container->findTaggedServiceIds($this->apiTag);
-
-        foreach ($taggedServices as $id => $tags) {
-            $handler = '';
+        foreach ($services as $id => $tags) {
             foreach ($tags as $attributes) {
-                if (empty($attributes['handler'])) {
-                    throw new \RuntimeException('Missing required attribute "handler".');
-                }
-                $handler = $attributes['handler'];
+                $key = $attributes['key'];
             }
-            $implementedInterfaces = class_implements($container->findDefinition($id)->getClass());
-
-            $serverDefinition = $container->findDefinition($rootServerPath . $handler);
-
-            foreach ($implementedInterfaces as $implementedInterface) {
-                if ($implementedInterface == JsonRpcApiInterface::class) {
-                    $serverDefinition->addMethodCall('setClass', [$container->findDefinition($id), $implementedInterface]);
-                }
-            }
+            $handlerRegistryDefinition->addMethodCall('addHandler', [$container->getDefinition($id), $key,]);
         }
     }
 }

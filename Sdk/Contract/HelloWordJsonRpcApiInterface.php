@@ -7,7 +7,11 @@
 namespace Insidestyles\JsonRpcBundle\Sdk\Contract;
 
 
+use Insidestyles\JsonRpcBundle\Annotation\JsonRpcApi;
+
 /**
+ * @JsonRpcApi(namespace = "main")
+ *
  * @author Fuong <insidestyles@gmail.com>
  */
 interface HelloWordJsonRpcApiInterface extends JsonRpcApiInterface

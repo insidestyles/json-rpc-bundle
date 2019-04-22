@@ -3,8 +3,8 @@
 namespace Insidestyles\JsonRpcBundle;
 
 use Insidestyles\JsonRpcBundle\DependencyInjection\Compiler\AddProcessorsPass;
+use Insidestyles\JsonRpcBundle\DependencyInjection\Compiler\JsonRpcApiCompilerPass;
 use Insidestyles\JsonRpcBundle\DependencyInjection\Compiler\JsonRpcHandlerCompilerPass;
-use Insidestyles\JsonRpcBundle\DependencyInjection\Compiler\JsonRpcServerCompilerPass;
 use Insidestyles\JsonRpcBundle\DependencyInjection\JsonRpcExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -27,8 +27,8 @@ class JsonRpcBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
+        $container->addCompilerPass(new JsonRpcApiCompilerPass());
         $container->addCompilerPass(new JsonRpcHandlerCompilerPass());
-        $container->addCompilerPass(new JsonRpcServerCompilerPass());
     }
 
     /**

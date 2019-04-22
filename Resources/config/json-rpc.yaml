@@ -41,4 +41,5 @@ services:
             - ~
             - '@json_rpc_api.serializer.default'
             - '@json_rpc_api.serializer.default_context'
+            - ~
 

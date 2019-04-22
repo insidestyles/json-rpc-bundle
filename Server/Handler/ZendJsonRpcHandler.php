@@ -2,8 +2,8 @@
 
 namespace Insidestyles\JsonRpcBundle\Server\Handler;
 
+use Insidestyles\JsonRpcBundle\Exception\Errors;
 use Insidestyles\JsonRpcBundle\Exception\InternalException;
-use Insidestyles\JsonRpcBundle\Exception\ValidationException;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerContextInterface;
@@ -25,13 +25,15 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
     private $logger;
     private $serializer;
     private $serializerContext;
+    private $enableAnnotation;
 
-    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null, ?SerializerContextInterface $serializerContext = null)
+    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null, ?SerializerContextInterface $serializerContext = null, ?bool $enableAnnotation = false)
     {
         $this->server = $server;
         $this->logger = $logger ?? new NullLogger();
         $this->serializer = $serializer ?? new DefaultSerializer();
         $this->serializerContext = $serializerContext ?? new DefaultSerializerContext();
+        $this->enableAnnotation = $enableAnnotation;
     }
 
     public function handle(Request $request): Response
@@ -76,7 +78,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                 $errorObject = $errors['data'];
                 if ($errorObject instanceof ValidationFailedException) {
                     $response['error'] = [
-                        'code' => -32098,
+                        'code' => Errors::VALIDATION_ERROR,
                         'message' => 'Validation Error',
                         'data' => $errorObject->getViolations(),
                     ];
@@ -91,7 +93,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
             $this->logger->error($e->getMessage());
             $response['id'] = null;
             $response['error'] = [
-                'code' => -32099,
+                'code' => Errors::INTERNAL_ERROR,
                 'message' => $e->getMessage(),
                 'data' => new InternalException($e->getMessage()),
             ];

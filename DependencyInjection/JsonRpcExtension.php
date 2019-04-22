@@ -16,6 +16,10 @@ use Zend\Json\Server\Smd;
 class JsonRpcExtension extends Extension
 {
     const ALIAS = 'json_rpc_api';
+    const SERVER_ID_PREFIX = JsonRpcExtension::ALIAS . '.server.';
+    const HANDLER_ID_PREFIX = JsonRpcExtension::ALIAS . '.handler.';
+    const HANDLER_TAG = 'json_rpc_api_handler';
+    const API_TAG = 'json_rpc_api';
 
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -44,17 +48,15 @@ class JsonRpcExtension extends Extension
      */
     private function registerHandler(string $handlerKey, array $handlerInfo, ContainerBuilder $container)
     {
-        $rootHandlerPath = self::ALIAS . '.handler.';
-        $rootServerPath = self::ALIAS . '.server.';
-        $handlerId = $rootHandlerPath . $handlerKey;
-        $serverId = $rootServerPath . $handlerKey;
+        $handlerId = self::HANDLER_ID_PREFIX . $handlerKey;
+        $serverId = self::SERVER_ID_PREFIX . $handlerKey;
 
         $definitions = [
             'server' => [
-                'zend-json-rpc' => $rootServerPath . 'json_rpc_abstract',
+                'zend-json-rpc' => self::SERVER_ID_PREFIX . 'json_rpc_abstract',
             ],
             'handler' => [
-                'zend-json-rpc' => $rootHandlerPath . 'zend_json_rpc_abstract',
+                'zend-json-rpc' => self::HANDLER_ID_PREFIX . 'zend_json_rpc_abstract',
             ],
         ];
 
@@ -78,9 +80,11 @@ class JsonRpcExtension extends Extension
             $handlerDefinition->replaceArgument(2, $serializer);
         }
 
-        $handlerDefinition->addTag('json_rpc_api_handler', [
-            'key' => $handlerKey,
-        ]);
+        if (!empty($handlerInfo['annotation'])) {
+            $handlerDefinition->replaceArgument(4, true);
+        }
+
+        $handlerDefinition->addTag(self::HANDLER_TAG, ['key' => $handlerKey,]);
 
         $container->setDefinition($handlerId, $handlerDefinition);
 

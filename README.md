@@ -123,7 +123,7 @@ services:
             - "@messenger.bus.default"
         tags:
             - {name: json_rpc_api, handler: main}
-            - 
+            - {name: json_rpc_api, handler: extra}
     hello_world_api_handler:
         class: Insidestyles\JsonRpcBundle\Handler\HelloWorldHandler
         tags:

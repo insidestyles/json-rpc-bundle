@@ -80,9 +80,7 @@ class JsonRpcExtension extends Extension
             $handlerDefinition->replaceArgument(2, $serializer);
         }
 
-        if (!empty($handlerInfo['annotation'])) {
-            $handlerDefinition->replaceArgument(4, true);
-        }
+        $handlerDefinition->replaceArgument(4, !empty($handlerInfo['annotation']));
 
         $handlerDefinition->addTag(self::HANDLER_TAG, ['key' => $handlerKey,]);
 

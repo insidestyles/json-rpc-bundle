@@ -12,7 +12,7 @@ and zend json server
 
         "php": "^7.2",
         "ext-json": "*",
-        "symfony/framework-bundle": "^4.1",
+        "symfony/framework-bundle": "^3.4|^4.1",
         "zendframework/zend-json-server": "^3.1"
 
 

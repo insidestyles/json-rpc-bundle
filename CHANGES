@@ -1,3 +1,10 @@
+Version 1.0.4:
+ - update serializer
+ - update di
+ - multiple handlers - same service
+ - namespace annotation (optional)
+ - optional symfony messenger
+
 Version 1.0.3:
  - fix https://github.com/insidestyles/json-rpc-bundle/issues/1
  - fix doc

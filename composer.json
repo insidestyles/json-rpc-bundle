@@ -1,6 +1,6 @@
 {
     "name": "insidestyles/json-rpc-bundle",
-    "description": "Json Rpc Bundle For MSA",
+    "description": "A simple and fast way to create json rpc server api for MSA. Json Rpc 2.0 Bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [

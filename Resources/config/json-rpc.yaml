@@ -5,6 +5,8 @@ parameters:
     json_rpc_api.server.json_rpc.class: Zend\Json\Server\Server
     json_rpc_api.handler.zend_json_rpc.class: Insidestyles\JsonRpcBundle\Server\Handler\ZendJsonRpcHandler
     json_rpc_api.serializer.default.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer
+    json_rpc_api.serializer.jms.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\JmsSerializer
+    json_rpc_api.serializer.symfony.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SymfonySerializer
     json_rpc_api.serializer.default_context.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext
 
 services:
@@ -25,6 +27,18 @@ services:
 
     json_rpc_api.serializer.default_context:
         class: '%json_rpc_api.serializer.default_context.class%'
+
+    json_rpc_api.serializer.jms_abstract:
+        class: '%json_rpc_api.serializer.jms.class%'
+        abstract: true
+        arguments:
+            - '@jms_serializer.serializer'
+
+    json_rpc_api.serializer.symfony_abstract:
+        class: '%json_rpc_api.serializer.symfony.class%'
+        abstract: true
+        arguments:
+            - '@serializer'
 
     json_rpc_api.serializer.default:
         class: '%json_rpc_api.serializer.default.class%'

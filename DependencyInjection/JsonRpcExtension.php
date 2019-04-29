@@ -2,6 +2,8 @@
 
 namespace Insidestyles\JsonRpcBundle\DependencyInjection;
 
+use JMS\Serializer\Serializer as JmsSerializer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,6 +31,19 @@ class JsonRpcExtension extends Extension
             $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
             $loader->load('json-rpc.yaml');
         }
+
+        if (class_exists(Serializer::class)) {
+            $symfonySerializerDefinition = new ChildDefinition('json_rpc_api.serializer.symfony_abstract');
+            $symfonySerializerDefinition->replaceArgument(0, new Reference('serializer'));
+            $container->setDefinition('json_rpc_api.serializer.symfony', $symfonySerializerDefinition);
+        }
+
+        if (class_exists(JmsSerializer::class)) {
+            $jmsSerializerDefinition = new ChildDefinition('json_rpc_api.serializer.jms_abstract');
+            $jmsSerializerDefinition->replaceArgument(0, new Reference('jms_serializer'));
+            $container->setDefinition('json_rpc_api.serializer.jms', $jmsSerializerDefinition);
+        }
+
         // Compile all handlers
         foreach ($config['handlers'] as $handlerKey => $handlerInfo) {
             // Register handler
@@ -66,6 +81,7 @@ class JsonRpcExtension extends Extension
         $serverDefinition->addMethodCall('setTarget', [$handlerKey,]);
         $serverDefinition->addMethodCall('setDescription', [$handlerKey . ' Api',]);
         $serverDefinition->addMethodCall('setEnvelope', [Smd::ENV_JSONRPC_2,]);
+
         $container->setDefinition($serverId, $serverDefinition);
 
         $handlerDefinition->replaceArgument(0, $serverDefinition);
@@ -78,6 +94,11 @@ class JsonRpcExtension extends Extension
         if (!empty($handlerInfo['serializer'])) {
             $serializer = new Reference($handlerInfo['serializer']);
             $handlerDefinition->replaceArgument(2, $serializer);
+        }
+
+        if (!empty($handlerInfo['context'])) {
+            $context = new Reference($handlerInfo['context']);
+            $handlerDefinition->replaceArgument(3, $context);
         }
 
         $handlerDefinition->replaceArgument(4, !empty($handlerInfo['annotation']));

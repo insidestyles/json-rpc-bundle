@@ -27,7 +27,9 @@ class JmsSerializer implements SerializerInterface
     public function serialize($data, ?SerializerContextInterface $context = null): string
     {
         $jmsContext = $this->contextFactory->createSerializationContext();
-        $jmsContext->setGroups($context && !empty($context->getGroups()) ? $context->getGroups() : ['default' => []]);
+        if ($context && !empty($context->getGroups())) {
+            $jmsContext->setGroups($context->getGroups());
+        }
 
         return $this->serializer->serialize($data, 'json', $jmsContext);
     }

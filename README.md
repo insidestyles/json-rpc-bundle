@@ -33,7 +33,9 @@ json_rpc_api:
             path: /api
             host: ~
             serializer: ~
+            context: ~
             logger: ~
+            annotation: ~
 ```
 
 Add Bundle to App
@@ -82,6 +84,7 @@ json_rpc_api:
             path: /api
             host: ~
             serializer: ~
+            context: ~
             logger: ~
             annotation: true
 ```              
@@ -140,22 +143,46 @@ json_rpc_api:
             path: /api
             host: ~
             serializer: ~
+            context: ~
             logger: ~
+            annotation: ~
         extra:
             path: /extra_api
             host: ~
             serializer: json_rpc_api.serialzier.jms
+            context: ~
             logger: monolog.logger
+            annotation: ~
 ```
 
 - Add custom serializer adapter
 
+```sh
+composer require jms/serializer-bundle
+```
+
 ```yaml
 services:
-    json_rpc_api.serialzier.jms:
-        class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\JmsSerializer
+    json_rpc_api.serialzier.custom:
+        class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\CustomSerializer
         arguments:
-            - "@jms_serializer"
+            - "@serializer"
+```
+
+- Enable jms serializer
+
+```yaml
+
+json_rpc_api:
+    handlers:
+        main:
+            path: /api
+            host: ~
+            serializer: json_rpc_api.serializer.jms
+            context: json_rpc_api.serializer.default_context            
+            logger: ~
+            annotation: ~
+
 ```
 
 

@@ -1,3 +1,6 @@
+Version 2.0.0:
+ - - remote object service - fix batch call
+
 Version 1.0.4:
  - update serializer
  - update di

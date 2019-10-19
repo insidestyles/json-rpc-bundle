@@ -13,6 +13,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
+use Zend\Json\Server\Error;
 use Zend\Json\Server\Server;
 use Zend\Json\Server\Request as JsonRpcRequest;
 
@@ -47,7 +48,7 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
         if (!empty($content[0])) {
             $response = [];
             foreach ($content as $childContent) {
-                $response[] = $this->handlRequest($childContent);
+                $response[] = $this->handlRequest(json_encode($childContent));
             }
         } else {
             $response = $this->handlRequest($request->getContent());
@@ -84,18 +85,22 @@ class ZendJsonRpcHandler implements JsonRpcHandlerInterface
                     ];
                 } else {
                     $errors['data'] = [];
+                    if ($errors['code'] == Error::ERROR_OTHER){
+                        $this->logger->error($errors['message']);;
+                        $errors['message'] = 'Unknown Error';
+                    }
+                    $response['error'] = $errors;
                 }
-                $response['error'] = $errors;
             } else {
                 $response['result'] = $jsonServerResponse->getResult();
             }
         } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->critical($e->getMessage());
             $response['id'] = null;
             $response['error'] = [
                 'code' => Errors::INTERNAL_ERROR,
-                'message' => $e->getMessage(),
-                'data' => new InternalException($e->getMessage()),
+                'message' => 'Internal Error',
+                'data' => [],
             ];
         }
 

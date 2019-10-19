@@ -17,4 +17,5 @@ interface Errors
     const APPLICATION_ERROR = -32500;
     const VALIDATION_ERROR = -32501;
     const INTERNAL_ERROR = -32502;
+    const REMOTE_OBJECT_CALL_ERROR = -32503;
 }

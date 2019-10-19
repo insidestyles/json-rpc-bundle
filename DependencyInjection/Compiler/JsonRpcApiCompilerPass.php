@@ -46,9 +46,11 @@ class JsonRpcApiCompilerPass implements CompilerPassInterface
                         if ($reader && $enableAnnotation) {
                             $reflection = new \ReflectionClass($implementedInterface);
                             $annotation = $reader->getClassAnnotation($reflection, JsonRpcApi::class);
-                            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-                            foreach ($methods as $method) {
-                                $serverDefinition->addMethodCall('addFunction', [[$container->findDefinition($id), $method->getName()], $annotation->namespace,]);
+                            if ($annotation) {
+                                $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+                                foreach ($methods as $method) {
+                                    $serverDefinition->addMethodCall('addFunction', [[$container->findDefinition($id), $method->getName()], $annotation->namespace,]);
+                                }
                             }
                         } else {
                             $serverDefinition->addMethodCall('setClass', [$container->findDefinition($id), $implementedInterface]);

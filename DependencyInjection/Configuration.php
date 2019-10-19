@@ -43,7 +43,7 @@ class Configuration implements ConfigurationInterface
                         ->example('rpc.domain.com')
                     ->end()
                     ->scalarNode('annotation')
-                        ->defaultValue(false)
+                        ->defaultValue(true)
                         ->info('Enable annotation for running this handler.')
                         ->end()
                     ->scalarNode('logger')

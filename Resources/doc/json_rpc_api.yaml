@@ -7,7 +7,7 @@ json_rpc_api:
             logger: ~
             annotation: ~
         extra:
-            path: /extra
+            path: /auth
             host: ~
             serializer: ~
             logger: ~

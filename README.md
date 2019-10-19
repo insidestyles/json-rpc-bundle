@@ -5,14 +5,13 @@ and zend json server
 
 - Json Rpc 2.0
 - Batch Support
-- Already maintained lib (symfony, Zend)
 
 ## Requirements
 
 
         "php": "^7.2",
         "ext-json": "*",
-        "symfony/framework-bundle": "^3.4|^4.1",
+        "symfony/framework-bundle": "^4.1",
         "zendframework/zend-json-server": "^3.1"
 
 
@@ -57,38 +56,6 @@ _json_rpc_api:
 
 - Add Example HelloWorldApi
 
-```yaml
-services:
-
-    hello_world_api:
-        class: Insidestyles\JsonRpcBundle\Api\HelloWorldApi
-        tags:
-            - {name: json_rpc_api, handler: main}
-
-```    
-
-- Add Annotation To HelloWorldApi
-
-Add requirement:
-
-```sh
-composer require doctrine/annotations
-```
-
-Enable annotation config: annotation => true
-
-```yaml
-json_rpc_api:
-    handlers:
-        main:
-            path: /api
-            host: ~
-            serializer: ~
-            context: ~
-            logger: ~
-            annotation: true
-```              
-
 Update api interface with JsonRpcApi Annotation
 
 @JsonRpcApi(namespace = "main")
@@ -126,7 +93,7 @@ services:
             - "@messenger.bus.default"
         tags:
             - {name: json_rpc_api, handler: main}
-            - {name: json_rpc_api, handler: extra}
+
     hello_world_api_handler:
         class: Insidestyles\JsonRpcBundle\Handler\HelloWorldHandler
         tags:
@@ -146,8 +113,8 @@ json_rpc_api:
             context: ~
             logger: ~
             annotation: ~
-        extra:
-            path: /extra_api
+        auth:
+            path: /auth
             host: ~
             serializer: json_rpc_api.serialzier.jms
             context: ~
@@ -243,17 +210,6 @@ Just implement your own interface that extends JsonRpcApiInterface. See example 
 ```json
 {
     "id": 1,
-	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
-	"params": {
-		"name": "test"
-	}
-}
-```
-- simple request content with annotation
-
-```json
-{
-    "id": 1,
 	"method": "main.helloWorld",
 	"params": {
 		"name": "test"
@@ -267,21 +223,41 @@ Just implement your own interface that extends JsonRpcApiInterface. See example 
 [
     {
         "id": 1,
-        "method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
+        "method": "main.helloWorld",
         "params": {
-            "name": "test"
+            "name": "hello1"
         }
     },
     {
         "id": 2,
-    	"method": "Insidestyles\\JsonRpcBundle\\Sdk\\Contract\\JsonRpcApiInterface.helloWorld",
+    	"method": "main.helloWorld",
     	"params": {
-    		"name": "test"
+    		"name": "hello2"
     	}
     }
 ]
 ```
 
-## Contribution
+- using remote service with other api endpoints
 
-All are welcome
+Add requirement:
+
+```sh
+composer ocramius/proxy-manager
+```
+
+Update service
+
+```yaml
+
+    hello.remote_services.hello:
+        tags:
+            -   name: 'json_rpc_remote_service'
+                url: '%hello.api_server_url%'
+                class: Insidestyles\JsonRpcBundle\Sdk\Contract\HelloWordJsonRpcApiInterface
+
+```
+Now you can call api
+```php
+    $container->get('hello.remote_services.hello')->helloWorld('Hi');
+```

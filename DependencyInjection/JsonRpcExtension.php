@@ -22,6 +22,7 @@ class JsonRpcExtension extends Extension
     const HANDLER_ID_PREFIX = JsonRpcExtension::ALIAS . '.handler.';
     const HANDLER_TAG = 'json_rpc_api_handler';
     const API_TAG = 'json_rpc_api';
+    const REMOTE_SERVICE_TAG = 'json_rpc_remote_service';
 
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -101,7 +102,7 @@ class JsonRpcExtension extends Extension
             $handlerDefinition->replaceArgument(3, $context);
         }
 
-        $handlerDefinition->replaceArgument(4, !empty($handlerInfo['annotation']));
+        $handlerDefinition->replaceArgument(4, $handlerInfo['annotation'] ?? true);
 
         $handlerDefinition->addTag(self::HANDLER_TAG, ['key' => $handlerKey,]);
 

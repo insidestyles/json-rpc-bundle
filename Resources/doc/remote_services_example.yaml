@@ -1,0 +1,7 @@
+services:
+
+    hello.remote_services.hello:
+        tags:
+            -   name: 'json_rpc_remote_service'
+                url: '%hello.api_server_url%'
+                class: Insidestyles\JsonRpcBundle\Sdk\Contract\HelloWordJsonRpcApiInterface

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Zend\Json\Server\Smd;
+use Laminas\Json\Server\Smd;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
@@ -69,16 +69,16 @@ class JsonRpcExtension extends Extension
 
         $definitions = [
             'server' => [
-                'zend-json-rpc' => self::SERVER_ID_PREFIX . 'json_rpc_abstract',
+                'json-rpc' => self::SERVER_ID_PREFIX . 'json_rpc_abstract',
             ],
             'handler' => [
-                'zend-json-rpc' => self::HANDLER_ID_PREFIX . 'zend_json_rpc_abstract',
+                'json-rpc' => self::HANDLER_ID_PREFIX . 'json_rpc_abstract',
             ],
         ];
 
-        $handlerDefinition = new ChildDefinition($definitions['handler']['zend-json-rpc']);
+        $handlerDefinition = new ChildDefinition($definitions['handler']['json-rpc']);
 
-        $serverDefinition = new ChildDefinition($definitions['server']['zend-json-rpc']);
+        $serverDefinition = new ChildDefinition($definitions['server']['json-rpc']);
         $serverDefinition->addMethodCall('setTarget', [$handlerKey,]);
         $serverDefinition->addMethodCall('setDescription', [$handlerKey . ' Api',]);
         $serverDefinition->addMethodCall('setEnvelope', [Smd::ENV_JSONRPC_2,]);

@@ -1,7 +1,7 @@
 # json-rpc-bundle
 Symfony Json Rpc Bundle
 Fast way to create json rpc microservice, using symfony messenger
-and zend json server
+and laminas json server
 
 - Json Rpc 2.0
 - Batch Support
@@ -11,8 +11,8 @@ and zend json server
 
         "php": "^7.2",
         "ext-json": "*",
-        "symfony/framework-bundle": "^4.1",
-        "zendframework/zend-json-server": "^3.1"
+        "symfony/framework-bundle": "^4.1" || ^5.0,
+        "laminas/laminas-json-server": "^3.1"
 
 
 ## Installation

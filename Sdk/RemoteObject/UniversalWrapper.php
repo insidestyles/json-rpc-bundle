@@ -12,8 +12,8 @@ use Insidestyles\JsonRpcBundle\Exception\RemoteObjectCallException;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
 use ProxyManager\Factory\RemoteObject\Adapter\JsonRpc;
 use ProxyManager\Factory\RemoteObjectFactory;
-use Zend\Http\Client as HttpClient;
-use Zend\Json\Server\Client as ServerClient;
+use Laminas\Http\Client as HttpClient;
+use Laminas\Json\Server\Client as ServerClient;
 
 /**
  * @author Fuong <insidestyles@gmail.com>

@@ -16,7 +16,8 @@
         "symfony/framework-bundle": "^4.1 || ^5.0",
         "laminas/laminas-json-server": "^3.0",
         "doctrine/annotations": "^1.6",
-        "laminas/laminas-dependency-plugin": "^1.0"
+        "laminas/laminas-dependency-plugin": "^1.0",
+        "insidestyles/json-rpc-bundle": "^2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",

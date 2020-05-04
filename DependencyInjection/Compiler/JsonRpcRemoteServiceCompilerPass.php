@@ -48,7 +48,7 @@ class JsonRpcRemoteServiceCompilerPass implements CompilerPassInterface
                         }
                     }
                 }
-                $httpClient = new ChildDefinition('json_rpc_api.client.zend_http_client_abstract');
+                $httpClient = new ChildDefinition('json_rpc_api.client.http_client_abstract');
                 $remoteServiceDefinition = new ChildDefinition('json_rpc_api.remote_service.universal_wrapper_abstract');
                 $remoteServiceDefinition->replaceArgument(0, $httpClient);
                 $remoteServiceDefinition->replaceArgument(1, $url);

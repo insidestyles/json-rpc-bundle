@@ -1,57 +1,64 @@
 parameters:
-    json_rpc_api.controller.class: Insidestyles\JsonRpcBundle\Controller\ApiController
-    json_rpc_api.handlers_locator.class: Insidestyles\JsonRpcBundle\Server\HandlersLocator
-    json_rpc_api.routing.loader.class: Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader
-    json_rpc_api.server.json_rpc.class: Zend\Json\Server\Server
-    json_rpc_api.client.zend_http_client.class: Zend\Http\Client
-    json_rpc_api.handler.zend_json_rpc.class: Insidestyles\JsonRpcBundle\Server\Handler\ZendJsonRpcHandler
-    json_rpc_api.serializer.default.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer
-    json_rpc_api.serializer.jms.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\JmsSerializer
-    json_rpc_api.serializer.symfony.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SymfonySerializer
-    json_rpc_api.serializer.default_context.class: Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext
     json_rpc_api.remote_object.universal_wrapper.class: Insidestyles\JsonRpcBundle\Sdk\RemoteObject\UniversalWrapper
 
 services:
 
     json_rpc_api.handler.locator:
-        class: '%json_rpc_api.handlers_locator.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\HandlersLocator'
+
+    Insidestyles\JsonRpcBundle\Server\HandlersLocator: '@json_rpc_api.handler.locator'
 
     json_rpc_api.controller:
-        class: '%json_rpc_api.controller.class%'
+        class: 'Insidestyles\JsonRpcBundle\Controller\ApiController'
         public: true
         arguments:
             - '@json_rpc_api.handler.locator'
+        calls: [['setContainer', ['@Psr\Container\ContainerInterface']]]
+
+    Insidestyles\JsonRpcBundle\Controller\ApiController: '@json_rpc_api.controller'
 
     json_rpc_api.routing.loader:
-        class: '%json_rpc_api.routing.loader.class%'
+        class: 'Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader'
         tags:
             - { name: 'routing.loader' }
 
+    Insidestyles\JsonRpcBundle\Routing\ApiRoutingLoader: '@json_rpc_api.routing.loader'
+
     json_rpc_api.serializer.default_context:
-        class: '%json_rpc_api.serializer.default_context.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext'
+
+    Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext: '@json_rpc_api.serializer.default_context'
 
     json_rpc_api.serializer.jms_abstract:
-        class: '%json_rpc_api.serializer.jms.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\JmsSerializer'
         abstract: true
         arguments:
             - '@jms_serializer.serializer'
 
+    Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\JmsSerializer: '@json_rpc_api.serializer.jms_abstract'
+
     json_rpc_api.serializer.symfony_abstract:
-        class: '%json_rpc_api.serializer.symfony.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SymfonySerializer'
         abstract: true
         arguments:
             - '@serializer'
 
+    Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SymfonySerializer: '@json_rpc_api.serializer.symfony_abstract'
+
     json_rpc_api.serializer.default:
-        class: '%json_rpc_api.serializer.default.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer'
+
+    Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer: '@json_rpc_api.serializer.default'
 
     json_rpc_api.server.json_rpc_abstract:
         abstract: true
-        class: '%json_rpc_api.server.json_rpc.class%'
+        class: 'Laminas\Json\Server\Server'
 
-    json_rpc_api.handler.zend_json_rpc_abstract:
+    Laminas\Json\Server\Server: '@json_rpc_api.server.json_rpc_abstract'
+
+    json_rpc_api.handler.json_rpc_abstract:
         abstract: true
-        class: '%json_rpc_api.handler.zend_json_rpc.class%'
+        class: 'Insidestyles\JsonRpcBundle\Server\Handler\JsonRpcHandler'
         arguments:
             - '@json_rpc_api.server.json_rpc_abstract'
             - ~
@@ -59,20 +66,26 @@ services:
             - '@json_rpc_api.serializer.default_context'
             - ~
 
+    Insidestyles\JsonRpcBundle\Server\Handler\JsonRpcHandler: '@json_rpc_api.handler.json_rpc_abstract'
+
     json_rpc_api.remote_service.universal_wrapper_abstract:
         abstract: true
-        class: '%json_rpc_api.remote_object.universal_wrapper.class%'
+        class: 'Insidestyles\JsonRpcBundle\Sdk\RemoteObject\UniversalWrapper'
         arguments:
             - ~
             - ~
             - ~
             - ~
 
-    json_rpc_api.client.zend_http_client_abstract:
+    Insidestyles\JsonRpcBundle\Sdk\RemoteObject\UniversalWrapper: '@json_rpc_api.remote_service.universal_wrapper_abstract'
+
+    json_rpc_api.client.http_client_abstract:
         abstract: true
-        class: '%json_rpc_api.client.zend_http_client.class%'
+        class: 'Laminas\Http\Client'
         arguments:
             - ~
             - ~
             - ~
+
+    Laminas\Http\Client: '@json_rpc_api.client.http_client_abstract'
 

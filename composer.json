@@ -11,18 +11,19 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2",
         "ext-json": "*",
-        "symfony/framework-bundle": "^4.1",
-        "zendframework/zend-json-server": "^3.0",
-        "doctrine/annotations": "^1.6"
+        "symfony/framework-bundle": "^4.1 || ^5.0",
+        "laminas/laminas-json-server": "^3.0",
+        "doctrine/annotations": "^1.6",
+        "laminas/laminas-dependency-plugin": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
         "jms/serializer-bundle": "^3.0",
-        "symfony/messenger": "^4.1",
-        "symfony/validator": "^4.1",
-        "symfony/serializer": "^4.1",
+        "symfony/messenger": "^4.1 || ^5.0",
+        "symfony/validator": "^4.1 || ^5.0",
+        "symfony/serializer": "^4.1 || ^5.0",
         "ocramius/proxy-manager": "^2.2"
     },
     "suggest": {

@@ -3,7 +3,6 @@
 namespace Insidestyles\JsonRpcBundle\Server\Handler;
 
 use Insidestyles\JsonRpcBundle\Exception\Errors;
-use Insidestyles\JsonRpcBundle\Exception\InternalException;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerContextInterface;
@@ -13,14 +12,14 @@ use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
-use Zend\Json\Server\Error;
-use Zend\Json\Server\Server;
-use Zend\Json\Server\Request as JsonRpcRequest;
+use Laminas\Json\Server\Error;
+use Laminas\Json\Server\Server;
+use Laminas\Json\Server\Request as JsonRpcRequest;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class ZendJsonRpcHandler implements JsonRpcHandlerInterface
+class JsonRpcHandler implements JsonRpcHandlerInterface
 {
     private $server;
     private $logger;

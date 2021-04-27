@@ -14,18 +14,17 @@
         "php": ">=7.2",
         "ext-json": "*",
         "symfony/framework-bundle": "^4.1 || ^5.0",
-        "laminas/laminas-json-server": "^3.0",
+        "laminas/laminas-json-server": "^3.3",
         "doctrine/annotations": "^1.6",
-        "laminas/laminas-dependency-plugin": "^1.0",
-        "insidestyles/json-rpc-bundle": "^2.1"
+        "laminas/laminas-dependency-plugin": "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5",
-        "jms/serializer-bundle": "^3.0",
+        "phpunit/phpunit": ">=6.5",
+        "jms/serializer-bundle": "^3.8",
         "symfony/messenger": "^4.1 || ^5.0",
         "symfony/validator": "^4.1 || ^5.0",
         "symfony/serializer": "^4.1 || ^5.0",
-        "ocramius/proxy-manager": "^2.2"
+        "ocramius/proxy-manager": "^2.11"
     },
     "suggest": {
         "doctrine/annotations": "Install for annotation features",

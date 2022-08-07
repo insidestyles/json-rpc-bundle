@@ -9,9 +9,9 @@ and laminas json server
 ## Requirements
 
 
-        "php": "^7.2",
+        "php": ">=8.0",
         "ext-json": "*",
-        "symfony/framework-bundle": "^4.1" || ^5.0,
+        "symfony/framework-bundle": "^5.3" || ^6.0,
         "laminas/laminas-json-server": "^3.1"
 
 
@@ -34,7 +34,7 @@ json_rpc_api:
             serializer: ~
             context: ~
             logger: ~
-            annotation: ~
+            error_handler: ~
 ```
 
 Add Bundle to App
@@ -112,14 +112,14 @@ json_rpc_api:
             serializer: ~
             context: ~
             logger: ~
-            annotation: ~
+            error_handler: ~
         auth:
             path: /auth
             host: ~
             serializer: json_rpc_api.serialzier.jms
             context: ~
             logger: monolog.logger
-            annotation: ~
+            error_handler: ~
 ```
 
 - Add custom serializer adapter
@@ -148,7 +148,7 @@ json_rpc_api:
             serializer: json_rpc_api.serializer.jms
             context: json_rpc_api.serializer.default_context            
             logger: ~
-            annotation: ~
+            error_handler: ~
 
 ```
 

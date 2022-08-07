@@ -1,3 +1,11 @@
+Version 3.0.0:
+ - update doc
+ - Version bump to 3.0.0
+
+Version 3.0.0:
+ - error handler
+ - init 3.x
+
 Version 2.2.0:
  - update dependencies for php 8
  - Merge branch '2.x' of github.com:insidestyles/json-rpc-bundle into 2.x

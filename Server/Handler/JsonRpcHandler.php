@@ -7,6 +7,7 @@ use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerContextInterface;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
+use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,14 +22,20 @@ use Laminas\Json\Server\Request as JsonRpcRequest;
  */
 class JsonRpcHandler implements JsonRpcHandlerInterface
 {
-    private $server;
-    private $logger;
-    private $serializer;
-    private $serializerContext;
-    private $enableAnnotation;
+    private Server $server;
+    private ?LoggerInterface $logger;
+    private ?SerializerInterface $serializer;
+    private ?SerializerContextInterface $serializerContext;
+    private ?bool $enableAnnotation;
 
-    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null, ?SerializerContextInterface $serializerContext = null, ?bool $enableAnnotation = false)
-    {
+    #[Pure]
+    public function __construct(
+        Server $server,
+        ?LoggerInterface $logger = null,
+        ?SerializerInterface $serializer = null,
+        ?SerializerContextInterface $serializerContext = null,
+        ?bool $enableAnnotation = false
+    ) {
         $this->server = $server;
         $this->logger = $logger ?? new NullLogger();
         $this->serializer = $serializer ?? new DefaultSerializer();
@@ -53,7 +60,8 @@ class JsonRpcHandler implements JsonRpcHandlerInterface
             $response = $this->handlRequest($request->getContent());
         }
 
-        return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);
+        return new Response($this->serializer->serialize($response, $this->serializerContext), 200,
+            ['Content-Type' => 'application/json']);
     }
 
     private function handlRequest(string $jsonContent)
@@ -84,7 +92,7 @@ class JsonRpcHandler implements JsonRpcHandlerInterface
                     ];
                 } else {
                     $errors['data'] = [];
-                    if ($errors['code'] == Error::ERROR_OTHER){
+                    if ($errors['code'] == Error::ERROR_OTHER) {
                         $this->logger->error($errors['message']);;
                         $errors['message'] = 'Unknown Error';
                     }

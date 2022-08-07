@@ -11,7 +11,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('json_rpc_api');
         $rootNode = $treeBuilder->getRootNode();
@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Build handlers section
      */
-    public function configHandlersSection(NodeBuilder $node)
+    public function configHandlersSection(NodeBuilder $node): void
     {
         $node
             ->arrayNode('handlers')

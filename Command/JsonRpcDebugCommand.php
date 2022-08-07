@@ -11,14 +11,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class JsonRpcDebugCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('debug:json-rpc-api')
             ->setDescription('Api Debug');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $output->writeln("Debug Action Needed");
     }

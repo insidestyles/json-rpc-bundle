@@ -11,8 +11,8 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class JsonRpcHandlerCompilerPass implements CompilerPassInterface
 {
-    private $config;
-    private $handlerTag;
+    private string $config;
+    private string $handlerTag;
 
     public function __construct()
     {
@@ -20,7 +20,7 @@ class JsonRpcHandlerCompilerPass implements CompilerPassInterface
         $this->handlerTag = JsonRpcExtension::HANDLER_TAG;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $handlerRegistryDefinition = $container->getDefinition($this->config . '.handler.locator');
         $services = $container->findTaggedServiceIds($this->handlerTag);

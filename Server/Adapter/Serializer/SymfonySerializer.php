@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterfa
  */
 class SymfonySerializer implements SerializerInterface
 {
-    private $serializer;
+    private SymfonySerializerInterface $serializer;
 
     public function __construct(SymfonySerializerInterface $serializer)
     {

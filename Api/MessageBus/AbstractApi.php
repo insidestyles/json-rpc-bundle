@@ -11,7 +11,7 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
  */
 abstract class AbstractApi
 {
-    protected $messageBus;
+    protected MessageBusInterface $messageBus;
 
     public function __construct(MessageBusInterface $messageBus)
     {
@@ -24,7 +24,7 @@ abstract class AbstractApi
      *
      * @return mixed The handler returned value
      */
-    protected function handle($message)
+    protected function handle(object $message): mixed
     {
         $envelope = $this->messageBus->dispatch($message);
         $handledStamp = $envelope->last(HandledStamp::class);

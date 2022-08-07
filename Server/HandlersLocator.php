@@ -10,7 +10,7 @@ use Insidestyles\JsonRpcBundle\Exception\HandlerNotFoundException;
  */
 class HandlersLocator implements HandlersLocatorInterface
 {
-    private $handlers = [];
+    private array $handlers = [];
 
     public function __construct()
     {

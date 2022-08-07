@@ -13,7 +13,7 @@ class HelloWorldMessage
      * @Assert\NotBlank()
      * @var string
      */
-    private $message;
+    private string $message;
 
     public function __construct(string $message)
     {

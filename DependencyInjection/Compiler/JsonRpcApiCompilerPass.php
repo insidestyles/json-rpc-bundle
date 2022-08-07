@@ -14,14 +14,14 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
  */
 class JsonRpcApiCompilerPass implements CompilerPassInterface
 {
-    private $apiTag;
+    private string $apiTag;
 
     public function __construct()
     {
         $this->apiTag = JsonRpcExtension::API_TAG;
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         try {
             $reader = $container->get('annotation_reader');

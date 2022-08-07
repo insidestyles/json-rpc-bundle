@@ -14,17 +14,18 @@ use ProxyManager\Factory\RemoteObject\Adapter\JsonRpc;
 use ProxyManager\Factory\RemoteObjectFactory;
 use Laminas\Http\Client as HttpClient;
 use Laminas\Json\Server\Client as ServerClient;
+use ProxyManager\Proxy\RemoteObjectInterface;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
 class UniversalWrapper implements RemoteObjectWrapperInterface
 {
-    private $httpClient;
+    private HttpClient $httpClient;
 
-    private $remoteObject;
+    private RemoteObjectInterface $remoteObject;
 
-    private $remoteObjectFactory;
+    private RemoteObjectFactory $remoteObjectFactory;
 
     public function __construct(
         HttpClient $httpClient,
@@ -43,7 +44,7 @@ class UniversalWrapper implements RemoteObjectWrapperInterface
         $this->remoteObject = $this->remoteObjectFactory->createProxy($serviceInterface);
     }
 
-    public function __call($name, $arguments)
+    public function __call($name, $arguments): mixed
     {
         if (method_exists($this->remoteObject, $name)) {
             try {
@@ -56,12 +57,12 @@ class UniversalWrapper implements RemoteObjectWrapperInterface
         throw new MethodNotFoundException();
     }
 
-    public function setHttpHeaders(array $headers)
+    public function setHttpHeaders(array $headers): void
     {
         $this->httpClient->setHeaders($headers);
     }
 
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->httpClient->setOptions($options);
     }

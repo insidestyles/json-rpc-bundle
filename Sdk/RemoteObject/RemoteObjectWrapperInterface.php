@@ -8,7 +8,7 @@ namespace Insidestyles\JsonRpcBundle\Sdk\RemoteObject;
  */
 interface RemoteObjectWrapperInterface
 {
-    public function setHttpHeaders(array $headers);
+    public function setHttpHeaders(array $headers): void;
 
-    public function setOptions(array $options);
+    public function setOptions(array $options): void;
 }

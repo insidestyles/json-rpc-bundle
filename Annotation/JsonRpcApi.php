@@ -19,7 +19,7 @@ class JsonRpcApi
 {
     const DEFAULT_NAMESPACE = 'json_rpc_api';
 
-    public $namespace;
+    public string $namespace;
 
     public function __construct(array $values)
     {

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class ApiController extends AbstractController
 {
-    private $handlersLocator;
+    private HandlersLocatorInterface $handlersLocator;
 
     public function __construct(HandlersLocatorInterface $handlersLocator)
     {

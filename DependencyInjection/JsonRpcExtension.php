@@ -24,7 +24,7 @@ class JsonRpcExtension extends Extension
     const API_TAG = 'json_rpc_api';
     const REMOTE_SERVICE_TAG = 'json_rpc_remote_service';
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -114,7 +114,7 @@ class JsonRpcExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return self::ALIAS;
     }

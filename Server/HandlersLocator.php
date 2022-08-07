@@ -16,7 +16,7 @@ class HandlersLocator implements HandlersLocatorInterface
     {
     }
 
-    public function addHandler(JsonRpcHandlerInterface $handler, $key): void
+    public function addHandler(JsonRpcHandlerInterface $handler, string $key): void
     {
         $this->handlers[$key] = $handler;
     }

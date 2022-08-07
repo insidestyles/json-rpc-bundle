@@ -84,8 +84,28 @@ services:
         class: 'Laminas\Http\Client'
         arguments:
             - ~
-            - ~
+            - {timeout: 60}
             - ~
 
     Laminas\Http\Client: '@json_rpc_api.client.http_client_abstract'
 
+    json_rpc_api.error_handler.manager:
+        class: 'Insidestyles\JsonRpcBundle\Server\ErrorHandler\ErrorHandlerManager'
+
+    Insidestyles\JsonRpcBundle\Server\ErrorHandler\ErrorHandlerManagerInterface: '@json_rpc_api.error_handler.manager'
+
+    json_rpc_api.error_handler.handler.handler_failed_exception:
+        autowire: true
+        class: 'Insidestyles\JsonRpcBundle\Server\ErrorHandler\Handler\HandlerFailedExceptionHandler'
+        tags:
+            - { name: 'json_rpc_api.error_handler' }
+
+    json_rpc_api.error_handler.handler.json_rpc_error:
+        class: 'Insidestyles\JsonRpcBundle\Server\ErrorHandler\Handler\JsonRpcErrorHandler'
+        tags:
+            - { name: 'json_rpc_api.error_handler' }
+
+    json_rpc_api.error_handler.handler.symfony_validation_exception:
+        class: 'Insidestyles\JsonRpcBundle\Server\ErrorHandler\Handler\SymfonyValidationErrorHandler'
+        tags:
+            - { name: 'json_rpc_api.error_handler' }

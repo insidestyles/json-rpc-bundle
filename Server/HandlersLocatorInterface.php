@@ -17,9 +17,9 @@ interface HandlersLocatorInterface
 
     /**
      * @param JsonRpcHandlerInterface $handler
-     * @param $key
+     * @param string $key
      */
-    public function addHandler(JsonRpcHandlerInterface $handler, $key): void;
+    public function addHandler(JsonRpcHandlerInterface $handler, string $key): void;
 
     /**
      * @param string $key

@@ -18,4 +18,6 @@ interface Errors
     const VALIDATION_ERROR = -32501;
     const INTERNAL_ERROR = -32502;
     const REMOTE_OBJECT_CALL_ERROR = -32503;
+    const MESSAGE_BUS_ERROR = -32504;
+    const UNKNOWN_ERROR = -32000;
 }

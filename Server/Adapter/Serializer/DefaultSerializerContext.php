@@ -11,7 +11,7 @@ namespace Insidestyles\JsonRpcBundle\Server\Adapter\Serializer;
  */
 class DefaultSerializerContext implements SerializerContextInterface
 {
-    private $groups = [];
+    private array $groups = [];
 
     public function getGroups(): array
     {

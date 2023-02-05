@@ -13,11 +13,8 @@ use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterfa
  */
 class SymfonySerializer implements SerializerInterface
 {
-    private $serializer;
-
-    public function __construct(SymfonySerializerInterface $serializer)
+    public function __construct(private readonly SymfonySerializerInterface $serializer)
     {
-        $this->serializer = $serializer;
     }
 
     public function serialize($data, ?SerializerContextInterface $context = null): string

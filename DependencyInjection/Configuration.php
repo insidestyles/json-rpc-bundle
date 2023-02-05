@@ -11,7 +11,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('json_rpc_api');
         $rootNode = $treeBuilder->getRootNode();
@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Build handlers section
      */
-    public function configHandlersSection(NodeBuilder $node)
+    public function configHandlersSection(NodeBuilder $node): void
     {
         $node
             ->arrayNode('handlers')
@@ -42,9 +42,9 @@ class Configuration implements ConfigurationInterface
                         ->info('The host for running this handler.')
                         ->example('rpc.domain.com')
                     ->end()
-                    ->scalarNode('annotation')
-                        ->defaultValue(true)
-                        ->info('Enable annotation for running this handler.')
+                    ->scalarNode('error_handler')
+                        ->defaultValue(null)
+                        ->info('Enable error handler for running this handler.')
                         ->end()
                     ->scalarNode('logger')
                         ->defaultValue(null)

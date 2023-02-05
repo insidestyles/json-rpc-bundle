@@ -10,7 +10,7 @@ namespace Insidestyles\JsonRpcBundle\Exception;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class ValidationException extends \Exception
+class ValidationException extends \Exception implements JsonRpcErrorInterface
 {
     protected $message = 'Validation Error';
     protected $code = -32097;

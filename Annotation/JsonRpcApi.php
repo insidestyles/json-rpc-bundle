@@ -7,7 +7,6 @@
 
 namespace Insidestyles\JsonRpcBundle\Annotation;
 
-
 /**
  *
  * @Annotation
@@ -17,9 +16,9 @@ namespace Insidestyles\JsonRpcBundle\Annotation;
  */
 class JsonRpcApi
 {
-    const DEFAULT_NAMESPACE = 'json_rpc_api';
+    final public const DEFAULT_NAMESPACE = 'json_rpc_api';
 
-    public $namespace;
+    public string $namespace;
 
     public function __construct(array $values)
     {

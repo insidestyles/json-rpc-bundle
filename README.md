@@ -9,9 +9,9 @@ and laminas json server
 ## Requirements
 
 
-        "php": "^7.2",
+        "php": ">=8.0",
         "ext-json": "*",
-        "symfony/framework-bundle": "^4.1" || ^5.0,
+        "symfony/framework-bundle": "^5.3" || ^6.0,
         "laminas/laminas-json-server": "^3.1"
 
 
@@ -34,7 +34,7 @@ json_rpc_api:
             serializer: ~
             context: ~
             logger: ~
-            annotation: ~
+            error_handler: ~
 ```
 
 Add Bundle to App
@@ -112,14 +112,14 @@ json_rpc_api:
             serializer: ~
             context: ~
             logger: ~
-            annotation: ~
+            error_handler: ~
         auth:
             path: /auth
             host: ~
             serializer: json_rpc_api.serialzier.jms
             context: ~
             logger: monolog.logger
-            annotation: ~
+            error_handler: ~
 ```
 
 - Add custom serializer adapter
@@ -136,6 +136,52 @@ services:
             - "@serializer"
 ```
 
+- Add custom serializer adapter
+
+```yaml
+services:
+  Insidestyles\\Core\\Exceptions\\ApiErrorHandler:
+    class: 'Insidestyles\Core\Exceptions\ApiErrorHandler'
+    tags:
+      - { name: 'json_rpc_api.error_handler' }
+```
+
+```php
+<?php
+
+namespace Insidestyles\Core\Exceptions;
+
+use Doctrine\ORM\EntityNotFoundException;
+use Insidestyles\JsonRpcBundle\Server\ErrorHandler\Handler\ErrorHandlerInterface;
+use Throwable;
+
+class ApiErrorHandler implements ErrorHandlerInterface
+{
+
+    private const SYSTEM_ERRORS = [
+        EntityNotFoundException::class,
+    ];
+
+    public function parse(Throwable $e): array
+    {
+        if (!$this->isSupported($e)) {
+            return [];
+        }
+        return [
+            'code' => $e->getCode(),
+            'message' => $e->getMessage(),
+            'data' => [],
+        ];
+    }
+
+    public function isSupported(Throwable $e): bool
+    {
+        return $e instanceof IsExceptionInterface || in_array(get_class($e), static::SYSTEM_ERRORS);
+    }
+}
+
+``` 
+
 - Enable jms serializer
 
 ```yaml
@@ -148,7 +194,7 @@ json_rpc_api:
             serializer: json_rpc_api.serializer.jms
             context: json_rpc_api.serializer.default_context            
             logger: ~
-            annotation: ~
+            error_handler: ~
 
 ```
 

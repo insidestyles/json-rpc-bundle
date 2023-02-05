@@ -17,14 +17,15 @@ use Laminas\Json\Server\Smd;
  */
 class JsonRpcExtension extends Extension
 {
-    const ALIAS = 'json_rpc_api';
-    const SERVER_ID_PREFIX = JsonRpcExtension::ALIAS . '.server.';
-    const HANDLER_ID_PREFIX = JsonRpcExtension::ALIAS . '.handler.';
-    const HANDLER_TAG = 'json_rpc_api_handler';
-    const API_TAG = 'json_rpc_api';
-    const REMOTE_SERVICE_TAG = 'json_rpc_remote_service';
+    final public const ALIAS = 'json_rpc_api';
+    final public const SERVER_ID_PREFIX = JsonRpcExtension::ALIAS . '.server.';
+    final public const HANDLER_ID_PREFIX = JsonRpcExtension::ALIAS . '.handler.';
+    final public const HANDLER_TAG = 'json_rpc_api_handler';
+    final public const API_TAG = 'json_rpc_api';
+    final public const REMOTE_SERVICE_TAG = 'json_rpc_remote_service';
+    final public const ERROR_HANDLER_TAG = 'json_rpc_api.error_handler';
 
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -102,7 +103,13 @@ class JsonRpcExtension extends Extension
             $handlerDefinition->replaceArgument(3, $context);
         }
 
-        $handlerDefinition->replaceArgument(4, $handlerInfo['annotation'] ?? true);
+        if (!empty($handlerInfo['error_handler'])) {
+            $context = new Reference($handlerInfo['error_handler']);
+            $handlerDefinition->replaceArgument(4, $context);
+        } else {
+            $errorHandlerManagerDefinition = $container->getDefinition('json_rpc_api.error_handler.manager');
+            $handlerDefinition->replaceArgument(4, $errorHandlerManagerDefinition);
+        }
 
         $handlerDefinition->addTag(self::HANDLER_TAG, ['key' => $handlerKey,]);
 
@@ -114,7 +121,7 @@ class JsonRpcExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return self::ALIAS;
     }

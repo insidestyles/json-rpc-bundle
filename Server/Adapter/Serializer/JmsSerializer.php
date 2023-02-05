@@ -6,6 +6,7 @@
 
 namespace Insidestyles\JsonRpcBundle\Server\Adapter\Serializer;
 
+use JetBrains\PhpStorm\Pure;
 use JMS\Serializer\ContextFactory\DefaultSerializationContextFactory;
 use JMS\Serializer\ContextFactory\SerializationContextFactoryInterface;
 use JMS\Serializer\SerializerInterface as JmsSerializerInterface;
@@ -15,13 +16,9 @@ use JMS\Serializer\SerializerInterface as JmsSerializerInterface;
  */
 class JmsSerializer implements SerializerInterface
 {
-    private $serializer;
-    private $contextFactory;
-
-    public function __construct(JmsSerializerInterface $serializer, ?SerializationContextFactoryInterface $contextFactory = null)
+    #[Pure]
+    public function __construct(private readonly JmsSerializerInterface $serializer, private readonly SerializationContextFactoryInterface $contextFactory = new DefaultSerializationContextFactory())
     {
-        $this->serializer = $serializer;
-        $this->contextFactory = $contextFactory ?? new DefaultSerializationContextFactory();
     }
 
     public function serialize($data, ?SerializerContextInterface $context = null): string

@@ -10,7 +10,7 @@ namespace Insidestyles\JsonRpcBundle\Exception;
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
-class HandlerNotFoundException extends \Exception
+class HandlerNotFoundException extends \Exception implements JsonRpcErrorInterface
 {
     protected $message = 'Handler Not Found';
     protected $code = -32098;

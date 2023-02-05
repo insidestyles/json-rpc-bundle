@@ -12,14 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class ApiController extends AbstractController
 {
-    private $handlersLocator;
-
-    public function __construct(HandlersLocatorInterface $handlersLocator)
+    public function __construct(private readonly HandlersLocatorInterface $handlersLocator)
     {
-        $this->handlersLocator = $handlersLocator;
     }
 
-    public function handle(Request $request, string $serverKey): Response
+    public function __invoke(Request $request, string $serverKey): Response
     {
         return $this->handlersLocator->getHandler($serverKey)->handle($request);
     }

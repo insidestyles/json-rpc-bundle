@@ -14,7 +14,7 @@ use Insidestyles\JsonRpcBundle\Message\HelloWorldMessage;
  */
 class HelloWorldHandler
 {
-    public function __invoke(HelloWorldMessage $message)
+    public function __invoke(HelloWorldMessage $message): string
     {
         return sprintf('Hello %s', $message->getMessage());
     }

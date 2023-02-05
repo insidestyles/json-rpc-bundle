@@ -14,14 +14,12 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
  */
 class JsonRpcRemoteServiceCompilerPass implements CompilerPassInterface
 {
-    private $remoteServiceTag;
-
-    public function __construct()
-    {
-        $this->remoteServiceTag = JsonRpcExtension::REMOTE_SERVICE_TAG;
+    public function __construct(
+        private readonly string $remoteServiceTag = JsonRpcExtension::REMOTE_SERVICE_TAG,
+    ) {
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         try {
             $reader = $container->get('annotation_reader');

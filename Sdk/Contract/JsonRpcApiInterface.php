@@ -6,7 +6,6 @@
 
 namespace Insidestyles\JsonRpcBundle\Sdk\Contract;
 
-
 /**
  * @author Fuong <insidestyles@gmail.com>
  */

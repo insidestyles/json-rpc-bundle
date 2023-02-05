@@ -9,20 +9,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class HelloWorldMessage
 {
-    /**
-     * @Assert\NotBlank()
-     * @var string
-     */
-    private $message;
-
-    public function __construct(string $message)
-    {
-        $this->message = $message;
+    public function __construct(
+        /**
+         * @Assert\NotBlank()
+         */
+        private readonly string $message
+    ) {
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;

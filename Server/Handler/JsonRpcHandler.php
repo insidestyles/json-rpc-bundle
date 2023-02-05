@@ -7,57 +7,53 @@ use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializer;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\DefaultSerializerContext;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerContextInterface;
 use Insidestyles\JsonRpcBundle\Server\Adapter\Serializer\SerializerInterface;
+use Insidestyles\JsonRpcBundle\Server\ErrorHandler\ErrorHandlerManager;
+use Insidestyles\JsonRpcBundle\Server\ErrorHandler\ErrorHandlerManagerInterface;
+use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\Exception\ValidationFailedException;
-use Laminas\Json\Server\Error;
 use Laminas\Json\Server\Server;
 use Laminas\Json\Server\Request as JsonRpcRequest;
+use Laminas\Json\Server\Response as JsonRpcResponse;
 
 /**
  * @author Fuong <insidestyles@gmail.com>
  */
 class JsonRpcHandler implements JsonRpcHandlerInterface
 {
-    private $server;
-    private $logger;
-    private $serializer;
-    private $serializerContext;
-    private $enableAnnotation;
-
-    public function __construct(Server $server, ?LoggerInterface $logger = null, ?SerializerInterface $serializer = null, ?SerializerContextInterface $serializerContext = null, ?bool $enableAnnotation = false)
+    #[Pure]
+    public function __construct(private readonly Server $server, private readonly LoggerInterface $logger = new NullLogger(), private readonly SerializerInterface $serializer = new DefaultSerializer(), private readonly SerializerContextInterface $serializerContext = new DefaultSerializerContext(), private readonly ErrorHandlerManagerInterface $errorHandler = new ErrorHandlerManager())
     {
-        $this->server = $server;
-        $this->logger = $logger ?? new NullLogger();
-        $this->serializer = $serializer ?? new DefaultSerializer();
-        $this->serializerContext = $serializerContext ?? new DefaultSerializerContext();
-        $this->enableAnnotation = $enableAnnotation;
     }
 
     public function handle(Request $request): Response
     {
         $this->server->setReturnResponse(true);
         if ('GET' == $request->getMethod()) {
-
-            return (new Response($this->server->getServiceMap(), 200, ['Content-Type' => 'application/json']));
+            return (new Response($this->server->getServiceMap(), Response::HTTP_OK, ['Content-Type' => 'application/json']));
         }
-        $content = json_decode($request->getContent(), true);
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         if (!empty($content[0])) {
             $response = [];
             foreach ($content as $childContent) {
-                $response[] = $this->handlRequest(json_encode($childContent));
+                $response[] = $this->handleRequest(json_encode($childContent, JSON_THROW_ON_ERROR));
             }
         } else {
-            $response = $this->handlRequest($request->getContent());
+            $response = $this->handleRequest($request->getContent());
         }
 
-        return new Response($this->serializer->serialize($response, $this->serializerContext), 200, ['Content-Type' => 'application/json']);
+        return new Response(
+            $this->serializer->serialize($response, $this->serializerContext),
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/json']
+        );
     }
 
-    private function handlRequest(string $jsonContent)
+    private function handleRequest(string $jsonContent): array
     {
+        $response = [];
         $rpcRequest = new JsonRpcRequest();
         $rpcRequest->loadJson($jsonContent);
 
@@ -72,24 +68,8 @@ class JsonRpcHandler implements JsonRpcHandlerInterface
                 'id' => $jsonServerResponse->getId(),
             ];
 
-
             if ($jsonServerResponse->isError()) {
-                $errors = $jsonServerResponse->getError()->toArray();
-                $errorObject = $errors['data'];
-                if ($errorObject instanceof ValidationFailedException) {
-                    $response['error'] = [
-                        'code' => Errors::VALIDATION_ERROR,
-                        'message' => 'Validation Error',
-                        'data' => $errorObject->getViolations(),
-                    ];
-                } else {
-                    $errors['data'] = [];
-                    if ($errors['code'] == Error::ERROR_OTHER){
-                        $this->logger->error($errors['message']);;
-                        $errors['message'] = 'Unknown Error';
-                    }
-                    $response['error'] = $errors;
-                }
+                $response['error'] = $this->handleErrorResponse($jsonServerResponse);
             } else {
                 $response['result'] = $jsonServerResponse->getResult();
             }
@@ -104,5 +84,14 @@ class JsonRpcHandler implements JsonRpcHandlerInterface
         }
 
         return $response;
+    }
+
+    private function handleErrorResponse(JsonRpcResponse $jsonServerResponse): array
+    {
+        $errors = $jsonServerResponse->getError()->toArray();
+        $errorObject = $errors['data'];
+        $this->logger->error($errors['message']);
+
+        return $this->errorHandler->handle($errorObject);
     }
 }

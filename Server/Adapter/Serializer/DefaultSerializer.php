@@ -13,6 +13,6 @@ class DefaultSerializer implements SerializerInterface
 {
     public function serialize($data, ?SerializerContextInterface $context = null): string
     {
-        return json_encode((array) $data);
+        return json_encode((array) $data, JSON_THROW_ON_ERROR);
     }
 }

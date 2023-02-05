@@ -6,7 +6,6 @@
 
 namespace Insidestyles\JsonRpcBundle\Sdk\Contract;
 
-
 use Insidestyles\JsonRpcBundle\Annotation\JsonRpcApi;
 
 /**

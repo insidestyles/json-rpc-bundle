@@ -14,15 +14,9 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class ApiRoutingLoader extends Loader
 {
-    /**
-     * @var array
-     */
-    private $paths = [];
+    private array $paths = [];
 
-    /**
-     * Add path
-     */
-    public function addPath($key, $host, $path, array $schemes = [])
+    public function addPath($key, $host, $path, array $schemes = []): void
     {
         $this->paths[$key] = [
             'host' => $host,
@@ -34,14 +28,14 @@ class ApiRoutingLoader extends Loader
     /**
      * {@inheritDoc}
      */
-    public function load($resource, $type = null)
+    public function load($resource, $type = null): RouteCollection
     {
         $routes = new RouteCollection();
         $rPath = JsonRpcExtension::ALIAS . 'api_handle';
 
         foreach ($this->paths as $key => $pathInfo) {
             $defaults = [
-                '_controller' => JsonRpcExtension::ALIAS . '.controller:handle',
+                '_controller' => JsonRpcExtension::ALIAS . '.controller',
                 'serverKey' => $key,
             ];
 
@@ -63,7 +57,7 @@ class ApiRoutingLoader extends Loader
     /**
      * {@inheritDoc}
      */
-    public function supports($resource, $type = null)
+    public function supports(mixed $resource, string $type = null): bool
     {
         return JsonRpcExtension::ALIAS == $type;
     }
